@@ -2,5 +2,154 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
-  "projects": {}
+  "projects": {
+    "dx-lib": {
+      "projectType": "library",
+      "root": "projects/dx-lib",
+      "sourceRoot": "projects/dx-lib/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/dx-lib/tsconfig.lib.json",
+            "project": "projects/dx-lib/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dx-lib/src/test.ts",
+            "tsConfig": "projects/dx-lib/tsconfig.spec.json",
+            "karmaConfig": "projects/dx-lib/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dx-lib/tsconfig.lib.json",
+              "projects/dx-lib/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "dx-app": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/dx-app",
+      "sourceRoot": "projects/dx-app/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/dx-app",
+            "index": "projects/dx-app/src/index.html",
+            "main": "projects/dx-app/src/main.ts",
+            "polyfills": "projects/dx-app/src/polyfills.ts",
+            "tsConfig": "projects/dx-app/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "projects/dx-app/src/favicon.ico",
+              "projects/dx-app/src/assets"
+            ],
+            "styles": [
+              "projects/dx-app/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/dx-app/src/environments/environment.ts",
+                  "with": "projects/dx-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "dx-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "dx-app:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "dx-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dx-app/src/test.ts",
+            "polyfills": "projects/dx-app/src/polyfills.ts",
+            "tsConfig": "projects/dx-app/tsconfig.spec.json",
+            "karmaConfig": "projects/dx-app/karma.conf.js",
+            "assets": [
+              "projects/dx-app/src/favicon.ico",
+              "projects/dx-app/src/assets"
+            ],
+            "styles": [
+              "projects/dx-app/src/styles.css"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dx-app/tsconfig.app.json",
+              "projects/dx-app/tsconfig.spec.json",
+              "projects/dx-app/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/dx-app/e2e/protractor.conf.js",
+            "devServerTarget": "dx-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "dx-app:serve:production"
+            }
+          }
+        }
+      }
+    }},
+  "defaultProject": "dx-lib"
 }
