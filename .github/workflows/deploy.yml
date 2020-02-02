@@ -14,7 +14,9 @@ jobs:
     - name: Run a one-line script
       run: echo ${{ github.event.client_payload }}
     - name: Deploy
-      run: echo ${{ toJson(github.event.client_payload) }}
+      env:
+        CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
+      run: echo "$CLIENT_PAYLOAD"
     - name: Run a multi-line script
       run: |
         echo Add other actions to build,
