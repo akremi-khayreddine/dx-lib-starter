@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "locatus-test"
+  },
+  "targets": {
+    "locatus-test": {
+      "hosting": {
+        "dx-lib-starter": [
+          "locatus-test"
+        ]
+      }
+    }
   }
 }
