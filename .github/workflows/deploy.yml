@@ -2,7 +2,7 @@ name: CI
 
 on: 
   repository_dispatch:
-    types: [dx-deploy]
+    types: dx-deploy
 
 jobs:
   build:
