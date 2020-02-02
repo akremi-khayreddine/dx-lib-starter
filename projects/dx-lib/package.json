@@ -1,6 +1,12 @@
 {
-  "name": "dx-lib",
-  "version": "0.0.1",
+  "name": "@akremi-khayreddine/dx-lib-starter",
+  "repository": {
+    "url": "git://github.com/akremi-khayreddine/dx-lib-starter.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "version": "0.0.2",
   "peerDependencies": {
     "@angular/common": "^8.1.3",
     "@angular/core": "^8.1.3"

@@ -1,20 +1,15 @@
 {
-  "name": "@akremi-khayreddine/dx-lib-starter",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/akremi-khayreddine/dx-lib-starter.git"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
+  "name": "dx-lib-starter",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:lib": "ng build dx-lib",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "publish": "ng build dx-lib && cd dist/dx-lib && npm publish"
   },
   "private": true,
   "dependencies": {
