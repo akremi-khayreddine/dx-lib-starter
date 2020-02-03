@@ -1,8 +1,6 @@
 name: CI
 
-on: 
-  repository_dispatch:
-    types: dx-deploy
+on: [pull_request]
 
 jobs:
   build:
@@ -11,7 +9,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy
+    - name: NPM Install & Build
+      run: |
+          npm ci
+          npm run ng build --prod dx-app
       env:
-        CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
-      run: echo "$CLIENT_PAYLOAD"
+        CI: true
+    - name: Deploy App
+      uses: w9jds/firebase-action@master
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      with:
+        args: deploy --only hosting:dx-lib-starter -m "${{ github.event.head.ref }}"  
