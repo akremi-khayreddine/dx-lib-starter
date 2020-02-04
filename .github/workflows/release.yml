@@ -34,7 +34,10 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: "@distinctlab"
           
-        
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
  
       - name: Update Json Package Version
         if: steps.version.outputs.PACKAGE_VERSION != steps.version.outputs.VERSION
