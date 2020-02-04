@@ -41,15 +41,7 @@ jobs:
      
       - name: Get the version
         id: version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
- 
-      - name: Update Json Package Version
-        if: steps.version.outputs.PACKAGE_VERSION != steps.version.outputs.VERSION
-        run: |
-          git config --local user.email "akremi-khayreddine@gmail.com"
-          git config --local user.name "khayreddine"
-          npm --no-git-tag-version version ${{ github.event.release.tag_name }}
-          git add . && git commit -m "Update version in package.json"          
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}         
            
                
       - name: Install - Build
