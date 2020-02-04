@@ -58,8 +58,7 @@ jobs:
       - name: Install - Build
         run: |
           npm ci
-          npm run build-lib --if-present
-          npm run build-app --if-present
+          npm run ng build --prod dx-app
         env:
           CI: true
           
