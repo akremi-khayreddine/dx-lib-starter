@@ -30,25 +30,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: https://npm.pkg.github.com/
           scope: "@distinctlab"
-
-
-
-      - name: Compute Next SemVer Tag
-        id: semver
-        uses: K-Phoen/semver-release-action@master
-        with:
-          release_branch: master
-          release_strategy: none
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Define Next Version Tag
-        id: version
-        run: |
-          echo ::set-output name=TAG::${{ steps.semver.outputs.tag }}
-          echo ::set-output name=VERSION::$(echo ${{ steps.semver.outputs.tag }} | tr -d 'v')
-          echo ::set-output name=PACKAGE_VERSION::$(cat package.json | jq -r .version)
-          #echo ::set-output name=LIB_PACKAGE_VERSION::$(cat projects/dx-ui-lib/package.json | jq -r .version)
           
         
  
@@ -57,7 +38,7 @@ jobs:
         run: |
           git config --local user.email "akremi-khayreddine@gmail.com"
           git config --local user.name "khayreddine"
-          npm --no-git-tag-version version ${{ steps.version.outputs.VERSION }}
+          npm --no-git-tag-version version ${{ github.event.release.tag_name }}
           git add . && git commit -m "Update version in package.json"
           
           
@@ -86,7 +67,7 @@ jobs:
 
       - name: Package Artifacts
         run: |
-          tar zcvf ${{ env.APP_NAME }}-${{ steps.version.outputs.VERSION }}.tar.gz  ${{ env.APP_DIST }}
+          tar zcvf ${{ env.APP_NAME }}-${{ github.event.release.tag_name }}.tar.gz  ${{ env.APP_DIST }}
 
 
 
@@ -97,8 +78,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./${{ env.APP_NAME }}-${{ steps.version.outputs.VERSION }}.tar.gz
-          asset_name: ${{ env.APP_NAME }}-${{ steps.version.outputs.VERSION }}.tar.gz
+          asset_path: ./${{ env.APP_NAME }}-${{ github.event.release.tag_name }}.tar.gz
+          asset_name: ${{ env.APP_NAME }}-${{ github.event.release.tag_name }}.tar.gz
           asset_content_type: application/gzip
    
    
