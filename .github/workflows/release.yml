@@ -87,4 +87,4 @@ jobs:
          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         with:
          args: deploy --only hosting:dx-lib-starter -m "${{ steps.version.outputs.VERSION }}"    
-      
+          
