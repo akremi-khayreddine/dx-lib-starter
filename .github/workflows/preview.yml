@@ -11,6 +11,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: NPM Install & Build
       run: |
+          echo "${{ github.event }}"
           npm ci
           npm run ng build --prod dx-app
       env:
