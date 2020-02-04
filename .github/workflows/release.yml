@@ -38,6 +38,10 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+     
+      - name: Get the version
+        id: version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
  
       - name: Update Json Package Version
         if: steps.version.outputs.PACKAGE_VERSION != steps.version.outputs.VERSION
@@ -59,7 +63,7 @@ jobs:
 
       - name: Package Artifacts
         run: |
-          tar zcvf ${{ env.APP_NAME }}-${{ github.event.release.tag_name }}.tar.gz  ${{ env.APP_DIST }}
+          tar zcvf ${{ env.APP_NAME }}-${{ steps.version.outputs.VERSION }}.tar.gz  ${{ env.APP_DIST }}
 
 
 
@@ -81,8 +85,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./${{ env.APP_NAME }}-${{ github.event.release.tag_name }}.tar.gz
-          asset_name: ${{ env.APP_NAME }}-${{ github.event.release.tag_name }}.tar.gz
+          asset_path: ./${{ env.APP_NAME }}-${{ steps.version.outputs.VERSION }}.tar.gz
+          asset_name: ${{ env.APP_NAME }}-${{ steps.version.outputs.VERSION }}.tar.gz
           asset_content_type: application/gzip
    
       - name: Deploy App
@@ -90,5 +94,5 @@ jobs:
         env:
          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         with:
-         args: deploy --only hosting:dx-lib-starter -m "${{ github.event.release.tag_name }}"    
+         args: deploy --only hosting:dx-lib-starter -m "${{ steps.version.outputs.VERSION }}"    
    
