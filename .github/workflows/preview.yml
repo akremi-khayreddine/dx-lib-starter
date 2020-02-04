@@ -20,4 +20,4 @@ jobs:
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       with:
-        args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}"  
+        args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.id }}"  
