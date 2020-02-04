@@ -1,0 +1,98 @@
+name: Create release  
+ 
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+env:
+  NODE_VERSION: "12.x"            # node version to use
+  PACKAGES_PATH: $HOME/packages   # directory used to store user data in /home/runner/packages.
+  SECRETS_PATH: $HOME/secrets     # directory used to store secrets in /home/runner/secrets.
+  SCRIPTS_PATH: ./.github/scripts # directory used for github actions scripts.
+  APP_NAME: dx-app             # application's name.
+  APP_DIST: dist/dx-app/       # Application dist path.
+
+jobs:
+  create-release:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Filesystem Config
+        run: |
+          #chmod -R +x ${{ env.SCRIPTS_PATH }}
+          mkdir -p ${{ env.PACKAGES_PATH }}   
+          mkdir -p ${{ env.SECRETS_PATH }}
+      - uses: actions/checkout@master
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com/
+          scope: "@distinctlab"
+          
+        
+ 
+      - name: Update Json Package Version
+        if: steps.version.outputs.PACKAGE_VERSION != steps.version.outputs.VERSION
+        run: |
+          git config --local user.email "akremi-khayreddine@gmail.com"
+          git config --local user.name "khayreddine"
+          npm --no-git-tag-version version ${{ github.event.release.tag_name }}
+          git add . && git commit -m "Update version in package.json"
+          
+          
+ 
+      - name: Push Update Package Version
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPOSITORY: ${{ github.repository }}    
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.ref }}
+        run: |
+           git pull "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ${BRANCH}
+           git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${BRANCH}
+           
+           
+           
+      - name: Install - Build
+        run: |
+          npm ci
+          npm run ng build --prod dx-app
+        env:
+          CI: true
+          
+          
+
+      - name: Package Artifacts
+        run: |
+          tar zcvf ${{ env.APP_NAME }}-${{ github.event.release.tag_name }}.tar.gz  ${{ env.APP_DIST }}
+
+
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./${{ env.APP_NAME }}-${{ github.event.release.tag_name }}.tar.gz
+          asset_name: ${{ env.APP_NAME }}-${{ github.event.release.tag_name }}.tar.gz
+          asset_content_type: application/gzip
+   
+   
