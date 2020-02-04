@@ -4,7 +4,7 @@
   },
   "targets": {
     "locatus-test": {
-      "hosting": {
+      "hosting": {   
         "dx-lib-starter": [
           "dx-lib-starter"
         ]
