@@ -6,7 +6,7 @@
     "locatus-test": {
       "hosting": {
         "dx-lib-starter": [
-          "dx-lib-starter"
+          "dx-lib-starter" 
         ]
       }
     }
