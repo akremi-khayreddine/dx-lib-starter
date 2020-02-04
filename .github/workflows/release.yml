@@ -1,0 +1,104 @@
+name: Create release  
+ 
+on:
+  release
+
+env:
+  NODE_VERSION: "12.x"            # node version to use
+  PACKAGES_PATH: $HOME/packages   # directory used to store user data in /home/runner/packages.
+  SECRETS_PATH: $HOME/secrets     # directory used to store secrets in /home/runner/secrets.
+  SCRIPTS_PATH: ./.github/scripts # directory used for github actions scripts.
+  APP_NAME: dx-app             # application's name.
+  APP_DIST: dist/dx-app/       # Application dist path.
+
+jobs:
+  create-release:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Filesystem Config
+        run: |
+          #chmod -R +x ${{ env.SCRIPTS_PATH }}
+          mkdir -p ${{ env.PACKAGES_PATH }}   
+          mkdir -p ${{ env.SECRETS_PATH }}
+      - uses: actions/checkout@master
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com/
+          scope: "@distinctlab"
+
+
+
+      - name: Compute Next SemVer Tag
+        id: semver
+        uses: K-Phoen/semver-release-action@master
+        with:
+          release_branch: master
+          release_strategy: none
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Define Next Version Tag
+        id: version
+        run: |
+          echo ::set-output name=TAG::${{ steps.semver.outputs.tag }}
+          echo ::set-output name=VERSION::$(echo ${{ steps.semver.outputs.tag }} | tr -d 'v')
+          echo ::set-output name=PACKAGE_VERSION::$(cat package.json | jq -r .version)
+          #echo ::set-output name=LIB_PACKAGE_VERSION::$(cat projects/dx-ui-lib/package.json | jq -r .version)
+          
+        
+ 
+      - name: Update Json Package Version
+        if: steps.version.outputs.PACKAGE_VERSION != steps.version.outputs.VERSION
+        run: |
+          git config --local user.email "akremi-khayreddine@gmail.com"
+          git config --local user.name "khayreddine"
+          npm --no-git-tag-version version ${{ steps.version.outputs.VERSION }}
+          git add . && git commit -m "Update version in package.json"
+          
+          
+ 
+      - name: Push Update Package Version
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPOSITORY: ${{ github.repository }}    
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.ref }}
+        run: |
+           git pull "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ${BRANCH}
+           git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${BRANCH}
+           
+           
+           
+      - name: Install - Build
+        run: |
+          npm ci
+          npm run build-lib --if-present
+          npm run build-app --if-present
+        env:
+          CI: true
+          
+          
+
+      - name: Package Artifacts
+        run: |
+          tar zcvf ${{ env.APP_NAME }}-${{ steps.version.outputs.VERSION }}.tar.gz  ${{ env.APP_DIST }}
+
+
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./${{ env.APP_NAME }}-${{ steps.version.outputs.VERSION }}.tar.gz
+          asset_name: ${{ env.APP_NAME }}-${{ steps.version.outputs.VERSION }}.tar.gz
+          asset_content_type: application/gzip
+   
+   
