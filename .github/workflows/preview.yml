@@ -2,17 +2,25 @@ name: CI
 
 on: [pull_request]
 
+env:
+  SCRIPTS_PATH: ./.github/scripts # directory used for github actions scripts.
+
 jobs:
+  start:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start workflow
+        env: 
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-head'}"
+        run: |
+            ${{ env.SCRIPTS_PATH }}/webhook.sh
+
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - name: Webhook
-      uses: joelwmale/webhook-action@master
-      env:
-        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-head'}"
     - uses: actions/checkout@v2
     - name: Webhook
       uses: joelwmale/webhook-action@master
