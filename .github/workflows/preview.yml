@@ -9,12 +9,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Webhook
+      uses: joelwmale/webhook-action@master
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        data: "{'step': 'NPM Install & Build', 'trigger': 'pull_request', 'repository': 'dx-lib-starter'}"
     - name: NPM Install & Build
       run: |
           npm ci
           npm run ng build --prod dx-app
       env:
         CI: true
+    - name: Webhook
+      uses: joelwmale/webhook-action@master
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        data: "{'step': 'Deploy App', 'trigger': 'pull_request', 'repository': ${{ github.repository }}}"
     - name: Deploy App
       uses: w9jds/firebase-action@master
       env:
