@@ -14,7 +14,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-head'}"
         run: |
-            ${{ env.SCRIPTS_PATH }}/webhook.sh
+            curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
 
   build:
 
