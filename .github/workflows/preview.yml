@@ -21,7 +21,7 @@ jobs:
       env:
         CI: true
     - name: Webhook
-      uses: joelwmale/webhook-action@master
+      uses: joelwmale/webhook-action@master 
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         data: "{'step': 'Deploy App', 'trigger': 'pull_request', 'repository': ${{ github.event.repository.name }}}"
