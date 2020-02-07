@@ -1,5 +1,5 @@
 {
-  "name": "dx-lib-starter",
+  "name": "dx-lib-starter", 
   "version": "0.0.22",
   "scripts": {
     "ng": "ng",
