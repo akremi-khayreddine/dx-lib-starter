@@ -8,6 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Webhook
+      uses: joelwmale/webhook-action@master
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        data: "{'steps':[{'name':'Start','status':'in progress'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"
     - uses: actions/checkout@v2
     - name: Webhook
       uses: joelwmale/webhook-action@master
