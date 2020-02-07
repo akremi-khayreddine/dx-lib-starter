@@ -73,7 +73,20 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-
+          
+      - name: Webhook
+        if: success()
+        uses: joelwmale/webhook-action@master
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'complete'}, {'name':'Deploy','status':'in progress'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-base'}"
+      
+      - name: Webhook
+        if: failure()
+        uses: joelwmale/webhook-action@master
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'fail'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-base'}" 
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -85,12 +98,7 @@ jobs:
           asset_path: ./${{ env.APP_NAME }}-${{ env.VERSION }}.tar.gz
           asset_name: ${{ env.APP_NAME }}-${{ env.VERSION }}.tar.gz
           asset_content_type: application/gzip
-   
-      - name: Webhook
-        uses: joelwmale/webhook-action@master
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'complete'}, {'name':'Deploy','status':'in progress'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-base'}"         
+           
       - name: Deploy App
         uses: w9jds/firebase-action@master
         env:
