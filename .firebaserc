@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "locatus-test"
+    "default": "locatus-test" 
   },
   "targets": {
     "locatus-test": {
