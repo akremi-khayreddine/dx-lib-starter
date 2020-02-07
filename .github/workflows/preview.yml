@@ -3,8 +3,16 @@ name: CI
 on: [pull_request]
 
 jobs:
+  start:
+    runs-on: [ubuntu-latest]
+    steps:
+    - uses: joelwmale/webhook-action@master
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-head'}"
+    
   build:
-
+    needs: [start]
     runs-on: ubuntu-latest
 
     steps:
