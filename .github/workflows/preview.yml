@@ -40,4 +40,4 @@ jobs:
       uses: joelwmale/webhook-action@master
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'steps':[{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'complete' }], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"  
+        data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'complete' }], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"  
