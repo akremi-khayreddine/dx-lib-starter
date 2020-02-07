@@ -13,7 +13,7 @@ jobs:
       uses: joelwmale/webhook-action@master
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'step': 'NPM Install & Build', 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"
+        data: "{'steps':[{'name':'Install and build','status':'start'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"
     - name: NPM Install & Build
       run: |
           npm ci
@@ -24,10 +24,15 @@ jobs:
       uses: joelwmale/webhook-action@master
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'step': 'Deploy App', 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"
+        data: "{'steps':[{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'start' }], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"
     - name: Deploy App
       uses: w9jds/firebase-action@master
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       with:
         args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.pull_request.id }}"  
+    - name: Webhook
+      uses: joelwmale/webhook-action@master
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        data: "{'steps':[{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'complete' }], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"  
