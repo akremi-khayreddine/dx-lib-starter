@@ -13,7 +13,7 @@ jobs:
       uses: joelwmale/webhook-action@master
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'step': 'NPM Install & Build', 'trigger': 'pull_request', 'repository': 'dx-lib-starter'}"
+        data: "{'step': 'NPM Install & Build', 'trigger': 'pull_request', 'repository': ${{ github.repository }}}"
     - name: NPM Install & Build
       run: |
           npm ci
