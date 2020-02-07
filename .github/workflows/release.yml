@@ -15,16 +15,21 @@ env:
   VERSION: "0.0.1"  
 
 jobs:
+  start:
+   runs-on: [ubuntu-latest]
+   steps:
+    - name: Start workflow
+      env: 
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-merge'}"
+      run: |
+          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
+   
   create-release:
     name: Build and Deploy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Webhook
-        uses: joelwmale/webhook-action@master
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-base'}"
       - name: Filesystem Config
         run: |
           #chmod -R +x ${{ env.SCRIPTS_PATH }}
@@ -40,10 +45,11 @@ jobs:
           scope: "@distinctlab"   
            
       - name: Webhook
-        uses: joelwmale/webhook-action@master
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'in progress'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-base'}"         
+          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'in progress'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-merge'}"
+        run: |
+          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL           
       - name: Install - Build
         run: |
           npm ci
@@ -53,10 +59,11 @@ jobs:
           
           
       - name: Webhook
-        uses: joelwmale/webhook-action@master
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'in progress'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-base'}"         
+          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'in progress'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-merge'}"         
+        run: |
+          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
       - name: Package Artifacts
         run: |
           tar zcvf ${{ env.APP_NAME }}-${{ env.VERSION }}.tar.gz  ${{ env.APP_DIST }}
@@ -76,18 +83,18 @@ jobs:
           
       - name: Webhook
         if: success()
-        uses: joelwmale/webhook-action@master
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'complete'}, {'name':'Deploy','status':'in progress'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-base'}"
-      
+          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'complete'}, {'name':'Deploy','status':'in progress'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-merge'}"
+        run: |
+          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
       - name: Webhook
         if: failure()
-        uses: joelwmale/webhook-action@master
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'fail'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-base'}" 
-
+          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'fail'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-merge'}" 
+        run: |
+          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1.0.1
@@ -107,8 +114,8 @@ jobs:
          args: deploy --only hosting:dx-lib-starter -m "${{ env.VERSION }}"    
        
       - name: Webhook
-        uses: joelwmale/webhook-action@master
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'complete'}, {'name':'Deploy','status':'complete'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-base'}"         
-      
+          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'complete'}, {'name':'Deploy','status':'complete'}], 'trigger': 'push', 'repository': '${{ github.event.repository.name }}-merge'}"         
+        run: |
+          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
