@@ -13,7 +13,7 @@ jobs:
       uses: joelwmale/webhook-action@master
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'steps':[{'name':'Install and build','status':'start'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"
+        data: "{'steps':[{'name':'Install and build','status':'in progress'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"
     - name: NPM Install & Build
       run: |
           npm ci
@@ -24,7 +24,7 @@ jobs:
       uses: joelwmale/webhook-action@master
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'steps':[{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'start' }], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"
+        data: "{'steps':[{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'in progress' }], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}'}"
     - name: Deploy App
       uses: w9jds/firebase-action@master
       env:
