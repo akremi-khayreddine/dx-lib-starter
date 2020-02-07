@@ -2,9 +2,6 @@ name: CI
 
 on: [pull_request]
 
-env:
-  SCRIPTS_PATH: ./.github/scripts # directory used for github actions scripts.
-
 jobs:
   start:
     runs-on: ubuntu-latest
@@ -23,10 +20,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Webhook
-      uses: joelwmale/webhook-action@master
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'in progress'}], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-head'}"
+      run: |
+          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
     - name: NPM Install & Build
       run: |
           npm ci
@@ -34,10 +32,11 @@ jobs:
       env:
         CI: true
     - name: Webhook
-      uses: joelwmale/webhook-action@master
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'in progress' }], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-head'}"
+      run: |
+          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
     - name: Deploy App
       uses: w9jds/firebase-action@master
       env:
@@ -45,7 +44,8 @@ jobs:
       with:
         args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.pull_request.id }}"  
     - name: Webhook
-      uses: joelwmale/webhook-action@master
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'complete' }], 'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-head'}"  
+        run: |
+            curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
