@@ -95,7 +95,7 @@ jobs:
         if: failure()
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'fail'}], 'trigger': 'pull_request', 'pull_request': '${{ github.event.pull_request.number }}', 'release': '${{ steps.create_release.outputs.id }}' ,'repository': '${{ github.event.repository.name }}-merge'}" 
+          data: "{'steps':[{'name':'Set up project','status':'complete'}, {'name':'Install and build','status':'complete'}, {'name':'Create release','status':'fail'}], 'trigger': 'pull_request', 'pull_request': '${{ github.event.pull_request.number }}' ,'repository': '${{ github.event.repository.name }}-merge'}" 
         run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
       - name: Upload Release Asset
