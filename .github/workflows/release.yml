@@ -1,9 +1,10 @@
 name: Create release  
  
-on:
-  push:
-    branches:
-    - master
+on: 
+ pull_request:
+  types: [closed]
+ repository_dispatch:
+  types: [merge]
 
 env:
   NODE_VERSION: "12.x"            # node version to use
@@ -16,6 +17,7 @@ env:
 
 jobs:
   start:
+   if: github.event_name === 'pull_request' && github.event.pull_request.merged === true
    runs-on: [ubuntu-latest]
    steps:
     - name: Start workflow
@@ -26,6 +28,7 @@ jobs:
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
    
   create-release:
+    if: github.event_name === 'pull_request' && github.event.pull_request.merged === true
     name: Build and Deploy
     runs-on: ubuntu-latest
 
