@@ -9,7 +9,7 @@ jobs:
       - name: Start workflow
         env: 
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'pull_request': { 'html_url': '${{ github.event.pull_request.html_url }}' ,'number': '${{ github.event.pull_request.number }}', 'title': '${{ github.event.pull_request.title }}', 'user': '${{ github.event.pull_request.user.login }}', 'head': '${{ github.event.pull_request.head.ref }}', 'base': '${{ github.event.pull_request.base.ref }}'} ,'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"
+          data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'pull_request': { 'html_url': '${{ github.event.pull_request.html_url }}' ,'number': '${{ github.event.pull_request.number }}', 'title': '${{ github.event.pull_request.title }}', 'user': '${{ github.event.pull_request.user.login }}', 'head': '${{ github.event.pull_request.head.ref }}', 'sha': '${{ github.event.pull_request.head.sha }}', 'base': '${{ github.event.pull_request.base.ref }}'} ,'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"
         run: |
             curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
 
@@ -22,7 +22,7 @@ jobs:
     - name: Webhook
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'in progress'}], 'pull_request': { 'html_url': '${{ github.event.pull_request.html_url }}','number': '${{ github.event.pull_request.number }}', 'title': '${{ github.event.pull_request.title }}', 'user': '${{ github.event.pull_request.user.login }}', 'head': '${{ github.event.pull_request.head.ref }}', 'base': '${{ github.event.pull_request.base.ref }}'},'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"
+        data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'in progress'}], 'pull_request': { 'html_url': '${{ github.event.pull_request.html_url }}','number': '${{ github.event.pull_request.number }}', 'title': '${{ github.event.pull_request.title }}', 'user': '${{ github.event.pull_request.user.login }}', 'head': '${{ github.event.pull_request.head.ref }}', 'sha': '${{ github.event.pull_request.head.sha }}','base': '${{ github.event.pull_request.base.ref }}'},'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"
       run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
     - name: NPM Install & Build
@@ -34,7 +34,7 @@ jobs:
     - name: Webhook
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'in progress' }], 'pull_request': { 'html_url': '${{ github.event.pull_request.html_url }}','number': '${{ github.event.pull_request.number }}', 'title': '${{ github.event.pull_request.title }}', 'user': '${{ github.event.pull_request.user.login }}', 'head': '${{ github.event.pull_request.head.ref }}', 'base': '${{ github.event.pull_request.base.ref }}'},'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"
+        data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'in progress' }], 'pull_request': { 'html_url': '${{ github.event.pull_request.html_url }}','number': '${{ github.event.pull_request.number }}', 'title': '${{ github.event.pull_request.title }}', 'user': '${{ github.event.pull_request.user.login }}', 'head': '${{ github.event.pull_request.head.ref }}', 'sha': '${{ github.event.pull_request.head.sha }}','base': '${{ github.event.pull_request.base.ref }}'},'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"
       run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
     - name: Deploy App
@@ -46,6 +46,6 @@ jobs:
     - name: Webhook
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'complete' }], 'pull_request': { 'html_url': '${{ github.event.pull_request.html_url }}','number': '${{ github.event.pull_request.number }}', 'title': '${{ github.event.pull_request.title }}', 'user': '${{ github.event.pull_request.user.login }}', 'head': '${{ github.event.pull_request.head.ref }}', 'base': '${{ github.event.pull_request.base.ref }}'},'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"  
+        data: "{'steps':[{'name':'Set up project','status':'complete'},{'name':'Install and build','status':'complete'}, { 'name': 'Deploy', 'status':'complete' }], 'pull_request': { 'html_url': '${{ github.event.pull_request.html_url }}','number': '${{ github.event.pull_request.number }}', 'title': '${{ github.event.pull_request.title }}', 'user': '${{ github.event.pull_request.user.login }}', 'head': '${{ github.event.pull_request.head.ref }}', 'sha': '${{ github.event.pull_request.head.sha }}','base': '${{ github.event.pull_request.base.ref }}'},'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"  
       run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
