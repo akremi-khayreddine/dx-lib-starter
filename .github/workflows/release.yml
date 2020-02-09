@@ -23,16 +23,22 @@ jobs:
     - name: Start workflow
       env: 
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'run_id': '${{ github.run_id }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
+        data: "{'run_id': '${{ github.run_id }}', 'current_job': '${{ 'name': 'start', 'status':'${{ job.status }}' }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
       run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
    
-  create-release:
+  release:
     if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
     name: Build and Deploy
     runs-on: ubuntu-latest
 
     steps:
+      - name: Webhook
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          data: "{'run_id': '${{ github.run_id }}', 'current_job': '${{ 'name': 'release', 'status':'in progress' }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
+        run: |
+          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL 
       - name: Filesystem Config
         run: |
           #chmod -R +x ${{ env.SCRIPTS_PATH }}
@@ -46,13 +52,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: https://npm.pkg.github.com/
           scope: "@distinctlab"   
-           
-      - name: Webhook
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'run_id': '${{ github.run_id }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
-        run: |
-          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL           
+                     
       - name: Install - Build
         run: |
           npm ci
@@ -60,13 +60,7 @@ jobs:
         env:
           CI: true
           
-          
-      - name: Webhook
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'run_id': '${{ github.run_id }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
-        run: |
-          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
+        
       - name: Package Artifacts
         run: |
           tar zcvf ${{ env.APP_NAME }}-${{ env.VERSION }}.tar.gz  ${{ env.APP_DIST }}
@@ -84,20 +78,6 @@ jobs:
           draft: false
           prerelease: false
           
-      - name: Webhook
-        if: success()
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'run_id': '${{ github.run_id }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
-        run: |
-          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
-      - name: Webhook
-        if: failure()
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'run_id': '${{ github.run_id }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
-        run: |
-          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1.0.1
@@ -119,6 +99,6 @@ jobs:
       - name: Webhook
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'run_id': '${{ github.run_id }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
+          data: "{'run_id': '${{ github.run_id }}', 'current_job': '${{ 'name': 'release', 'status': '${{ job.status }}' }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
         run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
