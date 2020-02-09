@@ -9,7 +9,7 @@ jobs:
       - name: Start workflow
         env: 
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{ 'id': '1' ,'run_id': '${{ github.run_id }}', 'current_job': { 'name': 'start', status: '${{ job.status }}' },'repository': '${{ github.event.repository.name }}-preview'}"
+          data: "{ 'id': '1' ,'run_id': '${{ github.run_id }}', 'current_job': { 'name': 'start', 'status': '${{ job.status }}' },'repository': '${{ github.event.repository.name }}-preview'}"
         run: |
             curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
 
@@ -22,7 +22,7 @@ jobs:
     - name: Webhook
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'id': '2' ,'run_id': '${{ github.run_id }}', 'current_job': { 'name': 'build', status: 'in progress' }, 'repository': '${{ github.event.repository.name }}-preview'}"
+        data: "{'id': '2' ,'run_id': '${{ github.run_id }}', 'current_job': { 'name': 'build', 'status': 'in progress' }, 'repository': '${{ github.event.repository.name }}-preview'}"
       run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
           
@@ -42,7 +42,7 @@ jobs:
     - name: Webhook
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'id': '2' ,'run_id': '${{ github.run_id }}', 'current_job': { 'name': 'build', status: '${{ job.status }}' }, 'repository': '${{ github.event.repository.name }}-preview'}"
+        data: "{'id': '2' ,'run_id': '${{ github.run_id }}', 'current_job': { 'name': 'build', 'status': '${{ job.status }}' }, 'repository': '${{ github.event.repository.name }}-preview'}"
       run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
   
@@ -53,7 +53,7 @@ jobs:
     - name: Webhook
       env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'id': '4' ,'run_id': '${{ github.run_id }}', 'current_job': { 'name': 'deploy', status: '${{ job.status }}'}, 'repository': '${{ github.event.repository.name }}-preview'}"
+          data: "{'id': '4' ,'run_id': '${{ github.run_id }}', 'current_job': { 'name': 'deploy', 'status': '${{ job.status }}'}, 'repository': '${{ github.event.repository.name }}-preview'}"
       run: |
             curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
       
