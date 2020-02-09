@@ -14,7 +14,7 @@ jobs:
             curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
 
   build:
-
+    needs: [start]
     runs-on: ubuntu-latest
 
     steps:
@@ -37,15 +37,22 @@ jobs:
         data: "{'id': '3' ,'run_id': '${{ github.run_id }}', 'repository': '${{ github.event.repository.name }}-preview'}"
       run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
-    - name: Deploy App
-      uses: w9jds/firebase-action@master
-      env:
-        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-      with:
-        args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.pull_request.id }}"  
-    - name: Webhook
-      env:
-        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'id': '4' ,'run_id': '${{ github.run_id }}', 'repository': '${{ github.event.repository.name }}-preview'}"
-      run: |
-          curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
+  
+  deploy:
+    runs-on: [ubuntu-latest]
+    needs: [build]
+    steps:
+
+      - name: Deploy App
+        uses: w9jds/firebase-action@master
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        with:
+          args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.pull_request.id }}"  
+      - name: Webhook
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          data: "{'id': '4' ,'run_id': '${{ github.run_id }}', 'repository': '${{ github.event.repository.name }}-preview'}"
+        run: |
+            curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
+
