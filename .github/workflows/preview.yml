@@ -9,7 +9,7 @@ jobs:
       - name: Start workflow
         env: 
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'pull_request': '${{ github.event.pull_request.number }}' ,'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"
+          data: "{'steps':[{'name':'Set up project','status':'in progress'}], 'run_id': '${{ github.run_id }}' ,'pull_request': '${{ github.event.pull_request.number }}' ,'trigger': 'pull_request', 'repository': '${{ github.event.repository.name }}-preview'}"
         run: |
             curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
 
