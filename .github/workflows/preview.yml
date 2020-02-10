@@ -14,11 +14,17 @@ jobs:
             curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
 
   build:
+    name: Install & Build
     needs: [start]
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+    - name: Dump job context
+      env:
+       JOB_CONTEXT: ${{ toJson(job) }}
+      run: echo "$JOB_CONTEXT"
+   
     - name: Webhook
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
