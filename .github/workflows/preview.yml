@@ -42,7 +42,7 @@ jobs:
     - name: Start workflow
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{ 'job': {'name': 'start', 'status': '${{ job.status }}'} }"
+        data: "{ 'job': {'name': 'start', 'status': '${{ job.status }}'}, 'repository': '${{ github.event.repository.name }}-preview' }"
       run: |
         curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL  
       
