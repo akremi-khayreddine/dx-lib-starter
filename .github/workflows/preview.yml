@@ -9,7 +9,7 @@ jobs:
       - name: Start workflow
         env: 
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{ 'run_id': '${{ github.run_id }}', 'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}', 'repository': '${{ github.event.repository.name }}-preview'}"
+          data: "{ 'run_id': '${{ github.run_id }}', job: { 'name': 'start', 'status': '${{ job.status }}', 'next': 'build' } ,'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}', 'repository': '${{ github.event.repository.name }}-preview'}"
         run: |
             curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
 
@@ -38,6 +38,13 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       with:
           args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.pull_request.id }}"  
+    
+    - name: Start workflow
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        data: "{ job: {'name': 'start', 'status': '${{ job.status }}'} }"
+      run: |
+        curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL  
       
 
 
