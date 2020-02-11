@@ -1,12 +1,14 @@
 name: CI     
    
 on: [pull_request] 
+env:
+   run_id: ${{ github.run_id }} 
 
 jobs:
   start:
     runs-on: ubuntu-latest
     steps:
-      - name: Start workflow
+      - name: Webhook
         env: 
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           data: "{ 'run_id': '${{ github.run_id }}', 'job': { 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' } ,'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}', 'repository': '${{ github.event.repository.name }}-preview'}"
@@ -39,7 +41,7 @@ jobs:
       with:
           args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.pull_request.id }}"  
     
-    - name: Start workflow
+    - name: Webhook
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         data: "{ 'run_id': '${{ github.run_id }}', 'job': { 'name': 'Install & Build', 'status': '${{ job.status }}' } ,'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}', 'repository': '${{ github.event.repository.name }}-preview'}"
