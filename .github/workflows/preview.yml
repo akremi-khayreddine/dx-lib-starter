@@ -2,7 +2,10 @@ name: CI
         
 on: [pull_request] 
 env:
-   run_id: ${{ github.run_id }} 
+   RUN_ID: ${{ github.run_id }} 
+   TRIGGER: pull_request
+   TRIGGER_ID: ${{ github.event.pull_request.number }}
+   WORKFLOW_ID: ${{ github.event.repository.name }}-preview
 
 jobs:
   start:
@@ -11,9 +14,10 @@ jobs:
       - name: Webhook
         env: 
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{ 'run_id': '${{ github.run_id }}', 'job': { 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' } ,'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}', 'repository': '${{ github.event.repository.name }}-preview'}"
+          JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
+          DATA: "{ 'run_id': '${{ github.run_id }}', 'job': { 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' } ,'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}', 'repository': '${{ github.event.repository.name }}-preview'}"
         run: |
-            curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
+            curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"{ 'run_id': '${{ env.RUN_id }}', 'trigger': '${{ env.TRIGGER }}', 'trigger_id': '${{ env.TRIGGER_ID }}', 'repository': '${{ env.WORKFLOW_ID }}', 'job': '$JOB' }\" }" $WEBHOOK_URL
 
   build:
     name: Install & Build
