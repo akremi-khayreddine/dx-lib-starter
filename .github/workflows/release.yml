@@ -20,7 +20,7 @@ jobs:
    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
    runs-on: [ubuntu-latest]
    steps:
-    - name: Start workflow
+    - name: Webhook
       env: 
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         data: "{'run_id': '${{ github.run_id }}', 'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
