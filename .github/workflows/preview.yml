@@ -17,7 +17,7 @@ jobs:
           JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
           DATA: "{ 'run_id': '${{ github.run_id }}', 'job': { 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' } ,'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}', 'repository': '${{ github.event.repository.name }}-preview'}"
         run: |
-            curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"{ 'run_id': '${{ env.RUN_ID }}', 'trigger': '${{ env.TRIGGER }}', 'trigger_id': '${{ env.TRIGGER_ID }}', 'repository': '${{ env.WORKFLOW_ID }}', 'job': '\"$JOB\"' }\" }" $WEBHOOK_URL
+            curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"{ 'run_id': '${{ env.RUN_ID }}', 'trigger': '${{ env.TRIGGER }}', 'trigger_id': '${{ env.TRIGGER_ID }}', 'repository': '${{ env.WORKFLOW_ID }}', 'job': $JOB }\" }" $WEBHOOK_URL
 
   build:
     name: Install & Build
