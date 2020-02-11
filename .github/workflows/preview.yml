@@ -5,7 +5,7 @@ env:
    RUN_ID: ${{ github.run_id }} 
    TRIGGER: pull_request
    TRIGGER_ID: ${{ github.event.pull_request.number }}
-   WORKFLOW_ID: ${{ github.event.repository.name }}-preview
+   WORKFLOW_ID: ${{ github.event.repository.name }}-preview  
 
 jobs:
   start:
