@@ -19,7 +19,9 @@ const data = JSON.stringify({
     repository: WORKFLOW_ID,
     job: JOB
   }
-})
+});
+
+console.log(data);
 
 const options = {
   hostname: 'us-central1-locatus-test.cloudfunctions.net',
@@ -28,7 +30,7 @@ const options = {
   headers: {
     'Content-Type': 'application/json'
   }
-}
+};
 
 const req = https.request(options, (res) => {
   console.log(`statusCode: ${res.statusCode}`)
