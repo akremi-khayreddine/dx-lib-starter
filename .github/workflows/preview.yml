@@ -19,7 +19,7 @@ jobs:
           JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
         run: |
             chmod -R +x ./.github/scripts
-            ./.github/scripts/webhook.sh
+            node ./.github/scripts/webhook.js
   build:
     name: Install & Build
     needs: [start]
