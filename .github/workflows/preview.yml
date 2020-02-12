@@ -52,5 +52,5 @@ jobs:
         JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
       run: |
          chmod -R +x ./.github/scripts
-         ./.github/scripts/webhook.sh      
+         node ./.github/scripts/webhook.js   
 
