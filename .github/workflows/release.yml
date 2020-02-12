@@ -105,4 +105,4 @@ jobs:
           JOB: "{ 'name': 'Build and Deploy', 'status': '${{ job.status }}' }"
         run: |
           chmod -R +x ./.github/scripts
-          node ./.github/scripts/webhook.jsK_URL
+          node ./.github/scripts/webhook.js
