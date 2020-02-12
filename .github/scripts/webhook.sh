@@ -1,9 +1,11 @@
 #!/bin/sh
 set -eu
-   
+     
 RUN_ID="$RUN_ID"
 TRIGGER="$TRIGGER"
 TRIGGER_ID="$TRIGGER_ID"
+OUTPUT=""
+OUTPUT_ID=""
 WORKFLOW_ID="$WORKFLOW_ID" 
 WEBHOOK_URL="https://us-central1-locatus-test.cloudfunctions.net/checkSuite"
 JOB=$JOB
