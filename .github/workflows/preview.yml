@@ -2,7 +2,7 @@ name: CI
 'on':
   - pull_request
 env:
-  RUN_ID: '${{ github.run_id }}'
+  RUN_ID: '${{ github.run_id }}' 
   TRIGGER: pull_request
   TRIGGER_ID: '${{ github.event.pull_request.number }}'
   WORKFLOW_ID: '${{ github.event.repository.name }}-preview'
