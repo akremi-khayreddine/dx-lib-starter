@@ -4,8 +4,8 @@ set -eu
 RUN_ID="$RUN_ID"
 TRIGGER="$TRIGGER"
 TRIGGER_ID="$TRIGGER_ID"
-OUTPUT="$OUTPUT"
-OUTPUT_ID="$OUTPUT_ID"
+OUTPUT="{ $OUTPUT:-default }"
+OUTPUT_ID="{ $OUTPUT_ID:-default }"
 WORKFLOW_ID="$WORKFLOW_ID" 
 WEBHOOK_URL="https://us-central1-locatus-test.cloudfunctions.net/checkSuite"
 JOB=$JOB
