@@ -19,7 +19,7 @@ env:
   TRIGGER: pull_request
   TRIGGER_ID: ${{ github.event.pull_request.number }}
   WORKFLOW_ID: dx-lib-starter-merge
-  WEBHOOK_URL: ${{ secrets.WEBHOOK_URL  
+  WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
 jobs:
   start:
