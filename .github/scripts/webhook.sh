@@ -1,6 +1,5 @@
 #!/bin/sh
-set -e
-set -o pipefail
+set -eu
 
 RUN_ID="$RUN_ID"
 TRIGGER="$TRIGGER"
