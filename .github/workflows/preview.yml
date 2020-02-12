@@ -17,6 +17,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
         run: |
+            chmod -R +x ./.github/scripts
             ./.github/scripts/webhook.sh
   build:
     name: Install & Build
