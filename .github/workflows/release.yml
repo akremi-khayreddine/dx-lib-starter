@@ -102,6 +102,8 @@ jobs:
       - name: Webhook
         if: always()
         env:
+          OUTPUT: release
+          OUTPUT_ID: ${{ steps.create_release.outputs.id }}
           JOB: "{ 'name': 'Build and Deploy', 'status': '${{ job.status }}' }"
         run: |
           chmod -R +x ./.github/scripts
