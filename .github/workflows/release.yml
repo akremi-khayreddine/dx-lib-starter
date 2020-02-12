@@ -23,7 +23,7 @@ jobs:
     - name: Webhook
       env: 
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        data: "{'run_id': '${{ github.run_id }}', 'job': { 'name': 'start', 'status': '${{ job.status}}', 'next': 'Build and Deploy' } ,'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
+        data: "{'run_id':'${{ github.run_id }}','job':{ 'name':'start','status':'${{ job.status}}','next':'Build and Deploy'},'trigger':'pull_request','trigger_id':'${{ github.event.pull_request.number }}','repository':'${{ github.event.repository.name }}-merge'}"
       run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
    
@@ -95,6 +95,6 @@ jobs:
         if: always()
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "{'run_id': '${{ github.run_id }}', 'job': { 'name': 'Build and Deploy', 'status': '${{ job.status }}' } ,'trigger': 'pull_request', 'trigger_id': '${{ github.event.pull_request.number }}', 'output': 'release', 'output_id': '${{ steps.create_release.outputs.id }}' ,'repository': '${{ github.event.repository.name }}-merge'}"
+          data: "{'run_id':'${{ github.run_id }}','job':{'name':'Build and Deploy','status':'${{ job.status }}'},'trigger':'pull_request','trigger_id':'${{github.event.pull_request.number}}','output':'release','output_id':'${{steps.create_release.outputs.id}}','repository':'${{ github.event.repository.name }}-merge'}"
         run: |
           curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"$data\" }" $WEBHOOK_URL
