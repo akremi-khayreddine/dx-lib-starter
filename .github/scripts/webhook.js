@@ -22,7 +22,7 @@ const data = JSON.stringify({
 })
 
 const options = {
-  hostname: 'https://us-central1-locatus-test.cloudfunctions.net',
+  hostname: 'us-central1-locatus-test.cloudfunctions.net',
   path: '/checkSuite',
   method: 'POST',
   headers: {
