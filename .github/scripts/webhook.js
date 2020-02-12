@@ -1,4 +1,4 @@
-const https = require('https')
+const https = require('https');
 
 let RUN_ID = process.env.RUN_ID;
 let TRIGGER = process.env.TRIGGER;
