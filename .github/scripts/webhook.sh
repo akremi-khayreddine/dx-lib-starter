@@ -5,7 +5,7 @@ RUN_ID="$RUN_ID"
 TRIGGER="$TRIGGER"
 TRIGGER_ID="$TRIGGER_ID"
 WORKFLOW_ID="$WORKFLOW_ID" 
-WEBHOOK_URL="$WEBHOOK_URL"
+WEBHOOK_URL="https://us-central1-locatus-test.cloudfunctions.net/checkSuite"
 JOB=$JOB
 
 curl -X POST -H "Content-Type: application/json" 
