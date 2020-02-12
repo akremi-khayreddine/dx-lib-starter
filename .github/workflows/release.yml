@@ -3,7 +3,7 @@ name: Create release
 on: 
  pull_request:
   types: [closed] 
- repository_dispatch:
+ repository_dispatch:   
   types: [merge]
 
 env:
