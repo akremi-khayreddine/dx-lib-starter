@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -e
 set -o pipefail
 
 RUN_ID="$RUN_ID"
