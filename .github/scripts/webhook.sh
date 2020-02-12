@@ -17,3 +17,4 @@ else
 fi
 
 curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"{ 'run_id': '$RUN_ID', 'trigger': '$TRIGGER', 'trigger_id': '$TRIGGER_ID', 'output': '$OUTPUT', 'output_id': '$OUTPUT_ID' ,'repository': '$WORKFLOW_ID', 'job': $JOB }\" }" $WEBHOOK_URL
+  
