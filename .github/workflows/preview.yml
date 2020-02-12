@@ -1,57 +1,53 @@
-name: CI     
-        
-on: [pull_request] 
+name: CI
+'on':
+  - pull_request
 env:
-   RUN_ID: ${{ github.run_id }} 
-   TRIGGER: pull_request
-   TRIGGER_ID: ${{ github.event.pull_request.number }}
-   WORKFLOW_ID: ${{ github.event.repository.name }}-preview
-   WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-  
-
+  RUN_ID: '${{ github.run_id }}'
+  TRIGGER: pull_request
+  TRIGGER_ID: '${{ github.event.pull_request.number }}'
+  WORKFLOW_ID: '${{ github.event.repository.name }}-preview'
+  WEBHOOK_URL: '${{ secrets.WEBHOOK_URL'
 jobs:
   start:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Webhook
-        env: 
-          JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
-        run: |
-            chmod -R +x ./.github/scripts
-            ./.github/scripts/webhook.sh
+        env:
+          JOB: >-
+            { 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install &
+            Build' }
+        run: |-
+          chmod -R +x ./.github/scripts
+                          ./.github/scripts/webhook.sh
   build:
     name: Install & Build
-    needs: [start]
+    needs:
+      - start
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Dump job context
-      env:
-       JOB_CONTEXT: ${{ toJson(job) }}
-      run: echo "$JOB_CONTEXT"
-          
-    - name: NPM Install & Build
-      run: |
+      - uses: actions/checkout@v2
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: '${{ toJson(job) }}'
+        run: echo "$JOB_CONTEXT"
+      - name: NPM Install & Build
+        run: |
           npm ci
           npm run ng build --prod dx-app
-      env:
-        CI: true
-  
-    - name: Deploy App
-      uses: w9jds/firebase-action@master
-      env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-      with:
-          args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.pull_request.id }}"  
-    
-    - name: Webhook
-      env:
-        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
-      run: |
-         chmod -R +x ./.github/scripts
-         ./.github/scripts/webhook.sh      
-
-
+        env:
+          CI: true
+      - name: Deploy App
+        uses: w9jds/firebase-action@master
+        env:
+          FIREBASE_TOKEN: '${{ secrets.FIREBASE_TOKEN }}'
+        with:
+          args: >-
+            deploy --only hosting:dx-lib-starter -m "${{ github.head_ref
+            }}-pr-${{ github.event.pull_request.id }}"
+      - name: Webhook
+        env:
+          JOB: '{ ''name'': ''Install & Build'', ''status'': ''${{ job.status }}'' }'
+        run: |-
+          chmod -R +x ./.github/scripts
+                          ./.github/scripts/webhook.sh
