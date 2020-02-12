@@ -17,8 +17,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
         run: |
-            curl -X POST -H "Content-Type: application/json" --data "{ \"data\": \"{ 'run_id': '${{ env.RUN_ID }}', 'trigger': '${{ env.TRIGGER }}', 'trigger_id': '${{ env.TRIGGER_ID }}', 'repository': '${{ env.WORKFLOW_ID }}', 'job': $JOB }\" }" $WEBHOOK_URL
-
+            ./.github/scripts/webhook.sh
   build:
     name: Install & Build
     needs: [start]
