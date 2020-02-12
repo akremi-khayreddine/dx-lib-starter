@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-     
+       
 RUN_ID="$RUN_ID"
 TRIGGER="$TRIGGER"
 TRIGGER_ID="$TRIGGER_ID"
