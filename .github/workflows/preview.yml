@@ -6,6 +6,8 @@ env:
    TRIGGER: pull_request
    TRIGGER_ID: ${{ github.event.pull_request.number }}
    WORKFLOW_ID: ${{ github.event.repository.name }}-preview
+   WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+  
 
 jobs:
   start:
@@ -14,7 +16,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Webhook
         env: 
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
         run: |
             chmod -R +x ./.github/scripts
