@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 set -o pipefail
-
+  
 RUN_ID="$RUN_ID"
 TRIGGER="$TRIGGER"
 TRIGGER_ID="$TRIGGER_ID"
