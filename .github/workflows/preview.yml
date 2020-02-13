@@ -48,7 +48,8 @@ jobs:
     
     - name: Webhook
       env:
-        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        OUTPUT: release
+        OUTPUT_ID: "0.0.6" 
         JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
       run: |
          chmod -R +x ./.github/scripts
