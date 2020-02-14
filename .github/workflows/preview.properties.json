@@ -1,0 +1,6 @@
+{
+  "name": "Preview",
+  "description": "Build and test a Node.js project with npm.",
+  "iconName": "angular",
+  "categories": ["JavaScript", "Node", "Npm", "Typescript"]
+}
