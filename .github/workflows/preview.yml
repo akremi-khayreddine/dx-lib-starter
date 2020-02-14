@@ -2,7 +2,7 @@ name: CI
         
 on:
   pull_request:
-    types: [synchronize, opened]
+    types: [synchronize, opened, labeled, unlabeled, edited]
 
 env:
    RUN_ID: ${{ github.run_id }} 
