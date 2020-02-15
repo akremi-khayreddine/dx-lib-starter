@@ -46,8 +46,7 @@ jobs:
     - name: Webhook
       env:
         CONTEXT: ${{ toJson(github) }} 
-        OUTPUT: next_release
-        OUTPUT_ID: 0.0.7
+        VERSION: 0.0.7
         JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
       run: |
          chmod -R +x ./.github/scripts
