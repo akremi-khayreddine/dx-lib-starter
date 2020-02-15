@@ -52,7 +52,7 @@ jobs:
     - name: Webhook
       env:
         OUTPUT: next_release
-        OUTPUT_ID: 0.0.6
+        OUTPUT_ID: 0.0.7
         JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
       run: |
          chmod -R +x ./.github/scripts
