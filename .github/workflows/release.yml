@@ -24,6 +24,7 @@ jobs:
       - name: Webhook
         if: always()
         env:
+          CONTEXT: ${{ toJson(github) }} 
           JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Build and Deploy' }"
         run: |
           chmod -R +x ./.github/scripts 
@@ -96,6 +97,7 @@ jobs:
       - name: Webhook
         if: always()
         env:
+          CONTEXT: ${{ toJson(github) }}
           OUTPUT: release
           OUTPUT_ID: ${{ steps.create_release.outputs.id }}
           JOB: "{ 'name': 'Build and Deploy', 'status': '${{ job.status }}' }"
