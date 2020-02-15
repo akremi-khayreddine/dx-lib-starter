@@ -31,7 +31,7 @@ let OUTPUT_ID = "";
 let OUTPUT = "";
 if (process.env.RELEASE) {
   OUTPUT = "release";
-  OUTPUT = process.env.RELEASE;
+  OUTPUT_ID = process.env.RELEASE;
 }
 if (process.env.VERSION) {
   OUTPUT = "version";
