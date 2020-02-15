@@ -37,8 +37,8 @@ if (process.env.VERSION) {
   OUTPUT = "version";
   OUTPUT_ID = process.env.VERSION;
 }
-let OUTPUT = process.env.OUTPUT ? process.env.OUTPUT : OUTPUT;
-let OUTPUT_ID = process.env.OUTPUT_ID ? process.env.OUTPUT_ID : OUTPUT_ID;
+OUTPUT = process.env.OUTPUT ? process.env.OUTPUT : OUTPUT;
+OUTPUT_ID = process.env.OUTPUT_ID ? process.env.OUTPUT_ID : OUTPUT_ID;
 /**
 * Set WORKFLOW_ID
 */
