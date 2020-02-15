@@ -13,7 +13,7 @@ env:
   SCRIPTS_PATH: ./.github/scripts # directory used for github actions scripts.
   APP_NAME: dx-app             # application's name.
   APP_DIST: dist/dx-app/       # Application dist path.
-  TEST_VERSION: "0.0.8"  
+  TEST_VERSION: "0.0.9"  
 
 jobs:
   start:
