@@ -27,8 +27,8 @@ TRIGGER_ID = process.env.TRIGGER_ID ? process.env.TRIGGER_ID : TRIGGER_ID;
 /**
 * Get OUTPUT
 */
-let OUTPUT_ID;
-let OUTPUT;
+let OUTPUT_ID = "";
+let OUTPUT = "";
 if (process.env.RELEASE) {
   OUTPUT = "release";
   OUTPUT = process.env.RELEASE;
