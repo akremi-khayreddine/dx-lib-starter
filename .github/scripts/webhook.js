@@ -27,8 +27,18 @@ TRIGGER_ID = process.env.TRIGGER_ID ? process.env.TRIGGER_ID : TRIGGER_ID;
 /**
 * Get OUTPUT
 */
-let OUTPUT = process.env.OUTPUT ? process.env.OUTPUT : "";
-let OUTPUT_ID = process.env.OUTPUT_ID ? process.env.OUTPUT_ID : "";
+let OUTPUT_ID;
+let OUTPUT;
+if (process.env.RELEASE) {
+  OUTPUT = "release";
+  OUTPUT = process.env.RELEASE;
+}
+if (process.env.VERSION) {
+  OUTPUT = "version";
+  OUTPUT_ID = process.env.VERSION;
+}
+let OUTPUT = process.env.OUTPUT ? process.env.OUTPUT : OUTPUT;
+let OUTPUT_ID = process.env.OUTPUT_ID ? process.env.OUTPUT_ID : OUTPUT_ID;
 /**
 * Set WORKFLOW_ID
 */
