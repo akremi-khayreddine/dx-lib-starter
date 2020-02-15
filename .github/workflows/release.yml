@@ -1,4 +1,4 @@
-name: Create release    
+name: release    
                             
 on: 
  pull_request:
@@ -14,12 +14,6 @@ env:
   APP_NAME: dx-app             # application's name.
   APP_DIST: dist/dx-app/       # Application dist path.
   VERSION: "0.0.6"  
-  
-  RUN_ID: ${{ github.run_id }}
-  TRIGGER: pull_request
-  TRIGGER_ID: ${{ github.event.pull_request.number }}
-  WORKFLOW_ID: dx-lib-starter-merge
-  WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
 jobs:
   start:
