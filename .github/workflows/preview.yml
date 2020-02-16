@@ -13,8 +13,8 @@ jobs:
       - name: Webhook
         if: always()
         env: 
-          CONTEXT: ${{ toJson(github) }} 
-          JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
+          GITHUB_CONTEXT: ${{ toJson(github) }} 
+          GITHUB_JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
         run: |
             chmod -R +x ./.github/scripts
             node ./.github/scripts/webhook.js
@@ -33,7 +33,7 @@ jobs:
     - name: NPM Install & Build
       run: |
           npm ci
-          npm run ng build --prod dx-apd
+          npm run ng build --prod dx-app
       env:
         CI: true
   
@@ -47,17 +47,17 @@ jobs:
     - name: Webhook
       if: success()
       env:
-        CONTEXT: ${{ toJson(github) }} 
-        VERSION: 0.1.0
-        JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
+        GITHUB_CONTEXT: ${{ toJson(github) }} 
+        VERSION: 0.1.1
+        GITHUB_JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
       run: |
          chmod -R +x ./.github/scripts
          node ./.github/scripts/webhook.js 
     - name: Webhook
       if: failure()
       env:
-        CONTEXT: ${{ toJson(github) }} 
-        JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
+        GITHUB_CONTEXT: ${{ toJson(github) }} 
+        GITHUB_JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
       run: |
          chmod -R +x ./.github/scripts
          node ./.github/scripts/webhook.js   
