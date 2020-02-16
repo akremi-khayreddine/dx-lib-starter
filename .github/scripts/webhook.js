@@ -60,7 +60,7 @@ let JOB = "{ 'name': '"+JOB_NAME+"', 'status': '"+ JOB_STATUS +"', 'next': '"+ N
 
 const payload = "{ 'run_id': '"+RUN_ID+"', 'trigger': '"+TRIGGER+"', 'trigger_id': '"+TRIGGER_ID+"', 'output': '"+OUTPUT+"', 'output_id': '"+OUTPUT_ID+"', 'repository': '"+WORKFLOW_ID+"', 'job': "+JOB+"}";
 
-const data =  "{\"data\": \"" + payload + "\"}";
+const data =  "{\"data\": \"" + payload + "\"}"; 
 
 const options = {
   hostname: 'us-central1-locatus-test.cloudfunctions.net',
