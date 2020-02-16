@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Webhook
+        if: always()
         env: 
           CONTEXT: ${{ toJson(github) }} 
           JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
@@ -44,6 +45,7 @@ jobs:
           args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.pull_request.id }}"  
     
     - name: Webhook
+      if: always()
       env:
         CONTEXT: ${{ toJson(github) }} 
         VERSION: 0.1.0
