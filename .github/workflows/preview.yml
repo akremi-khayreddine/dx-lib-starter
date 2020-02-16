@@ -14,7 +14,9 @@ jobs:
         if: always()
         env: 
           GITHUB_CONTEXT: ${{ toJson(github) }} 
-          GITHUB_JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Install & Build' }"
+          JOB_NAME: "start"
+          JOB_STATUS: ${{ job.status }}
+          NEXT_JOB: "Install & Build"
         run: |
             chmod -R +x ./.github/scripts
             node ./.github/scripts/webhook.js
@@ -48,8 +50,9 @@ jobs:
       if: success()
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }} 
-        VERSION: 0.1.1
-        GITHUB_JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
+        JOB_NAME: "Install & Build"
+        JOB_STATUS: ${{ job.status }}
+        JOB_PAYLOAD: "{ 'version': '0.0.1' }"
       run: |
          chmod -R +x ./.github/scripts
          node ./.github/scripts/webhook.js 
@@ -57,7 +60,8 @@ jobs:
       if: failure()
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }} 
-        GITHUB_JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
+        JOB_NAME: "Install & Build"
+        JOB_STATUS: ${{ job.status }}
       run: |
          chmod -R +x ./.github/scripts
          node ./.github/scripts/webhook.js   
