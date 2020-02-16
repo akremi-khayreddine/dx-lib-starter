@@ -52,7 +52,7 @@ let WEBHOOK_URL = "https://us-central1-locatus-test.cloudfunctions.net/checkSuit
 */
 let JOB = process.env.GITHUB_JOB;
 
-const payload = "{'run_id': '"+RUN_ID+"', 'trigger': '"+TRIGGER+"', 'trigger_id': '"+TRIGGER_ID+"', 'output': '"+OUTPUT+"', 'output_id': '"+OUTPUT_ID+"', 'repository': '"+WORKFLOW_ID+"', 'job': "+JOB+"}";
+const payload = "{ 'GITHUB_CONTEXT': "+ process.env.GITHUB_CONTEXT +" ,'run_id': '"+RUN_ID+"', 'trigger': '"+TRIGGER+"', 'trigger_id': '"+TRIGGER_ID+"', 'output': '"+OUTPUT+"', 'output_id': '"+OUTPUT_ID+"', 'repository': '"+WORKFLOW_ID+"', 'job': "+JOB+"}";
 
 const data =  "{\"data\": \"" + payload + "\"}";
 
