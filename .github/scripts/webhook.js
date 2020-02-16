@@ -53,8 +53,8 @@ let WEBHOOK_URL = "https://us-central1-locatus-test.cloudfunctions.net/checkSuit
 let JOB_NAME = process.env.JOB_NAME;
 let JOB_STATUS = process.env.JOB_STATUS;
 let JOB_TIME = new Date();
-let NEXT_JOB = process.env.NEXT_JOB;
-let JOB_PAYLOAD = process.env.JOB_PAYLOAD;
+let NEXT_JOB = process.env.NEXT_JOB ? process.env.NEXT_JOB : "";
+let JOB_PAYLOAD = process.env.JOB_PAYLOAD ? process.env.JOB_PAYLOAD : {};
 
 let JOB = "{ 'name': '"+JOB_NAME+"', 'status': '"+ JOB_STATUS +"', 'next': '"+ NEXT_JOB +"', 'completed_at': '"+ JOB_TIME +"' ,'payload': "+ JOB_PAYLOAD +" }";
 
