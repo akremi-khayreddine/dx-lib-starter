@@ -24,8 +24,8 @@ jobs:
       - name: Webhook
         if: always()
         env:
-          CONTEXT: ${{ toJson(github) }} 
-          JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Build and Deploy' }"
+          GITHUB_CONTEXT: ${{ toJson(github) }} 
+          GITHUB_JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Build and Deploy' }"
         run: |
           chmod -R +x ./.github/scripts 
           node ./.github/scripts/webhook.js
@@ -97,9 +97,9 @@ jobs:
       - name: Webhook
         if: always()
         env:
-          CONTEXT: ${{ toJson(github) }}
-          RELEASE: ${{ steps.create_release.outputs.id }}
-          JOB: "{ 'name': 'Build and Deploy', 'status': '${{ job.status }}' }"
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+          VERSION: ${{ env.TEST_VERSION }}
+          GITHUB_JOB: "{ 'name': 'Build and Deploy', 'status': '${{ job.status }}' }"
         run: |
           chmod -R +x ./.github/scripts
           node ./.github/scripts/webhook.js
