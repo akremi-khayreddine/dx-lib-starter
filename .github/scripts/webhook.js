@@ -3,7 +3,7 @@ const https = require('https');
 /**
 * Github context
 */
-let CONTEXT = JSON.parse(process.env.CONTEXT);
+let CONTEXT = JSON.parse(process.env.GITHUB_CONTEXT);
 /**
 * Get run id
 */
@@ -29,9 +29,9 @@ TRIGGER_ID = process.env.TRIGGER_ID ? process.env.TRIGGER_ID : TRIGGER_ID;
 */
 let OUTPUT_ID = "";
 let OUTPUT = "";
-if (process.env.RELEASE) {
+if (process.env.RELEASE_ID) {
   OUTPUT = "release";
-  OUTPUT_ID = process.env.RELEASE;
+  OUTPUT_ID = process.env.RELEASE_ID;
 }
 if (process.env.VERSION) {
   OUTPUT = "version";
@@ -50,7 +50,7 @@ let WEBHOOK_URL = "https://us-central1-locatus-test.cloudfunctions.net/checkSuit
 /**
 *
 */
-let JOB = process.env.JOB;
+let JOB = process.env.GITHUB_JOB;
 
 const payload = "{'run_id': '"+RUN_ID+"', 'trigger': '"+TRIGGER+"', 'trigger_id': '"+TRIGGER_ID+"', 'output': '"+OUTPUT+"', 'output_id': '"+OUTPUT_ID+"', 'repository': '"+WORKFLOW_ID+"', 'job': "+JOB+"}";
 
