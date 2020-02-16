@@ -45,10 +45,18 @@ jobs:
           args: deploy --only hosting:dx-lib-starter -m "${{ github.head_ref }}-pr-${{ github.event.pull_request.id }}"  
     
     - name: Webhook
-      if: always()
+      if: success()
       env:
         CONTEXT: ${{ toJson(github) }} 
         VERSION: 0.1.0
+        JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
+      run: |
+         chmod -R +x ./.github/scripts
+         node ./.github/scripts/webhook.js 
+    - name: Webhook
+      if: failure()
+      env:
+        CONTEXT: ${{ toJson(github) }} 
         JOB: "{ 'name': 'Install & Build', 'status': '${{ job.status }}' }" 
       run: |
          chmod -R +x ./.github/scripts
