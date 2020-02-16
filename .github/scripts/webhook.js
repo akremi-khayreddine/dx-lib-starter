@@ -56,7 +56,7 @@ let JOB_TIME = new Date();
 let NEXT_JOB = process.env.NEXT_JOB;
 let JOB_PAYLOAD = process.env.JOB_PAYLOAD;
 
-let JOB = "{ 'name': '"+JOB_NAME+"', 'status': '"+ JOB_STATUS +"', 'next': '"+ NEXT_JOB +"', 'completed_at': '"+ JOB_TIME +"' ,'payload': '"+ JOB_PAYLOAD +"' }";
+let JOB = "{ 'name': '"+JOB_NAME+"', 'status': '"+ JOB_STATUS +"', 'next': '"+ NEXT_JOB +"', 'completed_at': '"+ JOB_TIME +"' ,'payload': "+ JOB_PAYLOAD +" }";
 
 const payload = "{ 'run_id': '"+RUN_ID+"', 'trigger': '"+TRIGGER+"', 'trigger_id': '"+TRIGGER_ID+"', 'output': '"+OUTPUT+"', 'output_id': '"+OUTPUT_ID+"', 'repository': '"+WORKFLOW_ID+"', 'job': "+JOB+"}";
 
