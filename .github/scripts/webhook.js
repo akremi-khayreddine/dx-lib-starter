@@ -67,12 +67,12 @@ let JOB = {
 const payload = {
    run_id: RUN_ID,
    trigger: TRIGGER, 
-   trigger_id: 
-   TRIGGER_ID, 
+   trigger_id: TRIGGER_ID, 
    output: OUTPUT,
    output_id: OUTPUT_ID,
    repository: WORKFLOW_ID,
-   job: JOB
+   job: JOB,
+   context: CONTEXT
 };
 
 const data =  JSON.stringify({data: payload });
