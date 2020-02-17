@@ -21,7 +21,7 @@ let RUN_ID = CONTEXT.run_id;
 */
 let TRIGGER = process.env.TRIGGER ? process.env.TRIGGER : CONTEXT.event_name;
 /**
-* If we pass a TRIGGER_ID then use it else extract it from GITHUB context
+* If we pass a TRIGGER_ID then use it else extract it from GITHUB context  
 */
 let TRIGGER_ID;
 if(TRIGGER === "pull_request") {
