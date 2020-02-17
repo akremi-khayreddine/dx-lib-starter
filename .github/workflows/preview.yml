@@ -14,6 +14,7 @@ jobs:
         if: always()
         env: 
           GITHUB_CONTEXT: ${{ toJson(github) }} 
+          WEBHOOK_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           JOB_NAME: "start"
           JOB_STATUS: ${{ job.status }}
           NEXT_JOB: "Install & Build"
