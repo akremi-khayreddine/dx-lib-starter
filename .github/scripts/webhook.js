@@ -29,31 +29,24 @@ if(CONTEXT.event_name === "repository_dispatch") {
   TRIGGER = CONTEXT.event[CONTEXT.event_name];
 }
 /**
-*
+* Set Current JOB
 */
-let JOB_NAME = process.env.JOB_NAME;
-let JOB_STATUS = process.env.JOB_STATUS;
-let JOB_TIME = new Date();
-let NEXT_JOB = process.env.NEXT_JOB ? process.env.NEXT_JOB : "";
-let JOB_PAYLOAD = process.env.JOB_PAYLOAD ? process.env.JOB_PAYLOAD : {};
-
 let JOB = {
-   name: JOB_NAME,
-   status: JOB_STATUS,
-   next: NEXT_JOB,
-   completed_at: JOB_TIME
+   name: process.env.JOB_NAME,
+   status: process.env.JOB_STATUS,
+   next: process.env.NEXT_JOB,
+   completed_at: new Date()
 };
-
-const payload = {
+/**
+* Set Webhook payload
+*/
+let webhook_payload = {
+   webhook_id: WEBHOOK_ID,
    run_id: RUN_ID,
    trigger: TRIGGER, 
-   webhook_id: WEBHOOK_ID,
-   job: JOB,
    context: CONTEXT,
-   payload: JOB_PAYLOAD
+   payload: process.env.JOB_PAYLOAD
 };
-
-console.log(payload);
 
 db.collection("webhooks")
     .doc(WEBHOOK_ID)
@@ -66,7 +59,8 @@ db.collection("webhooks")
       } else {
         jobs = [JOB];
       }
-      console.log(jobs);
+      webhook_payload = { ...webhook_payload, jobs };
+      console.log(webhook_payload);
      }).catch((error) => {
       console.log(error);
      });
