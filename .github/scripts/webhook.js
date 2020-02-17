@@ -26,7 +26,7 @@ let TRIGGER;
 if(CONTEXT.event_name === "repository_dispatch") {
   TRIGGER =  CONTEXT.event.client_payload;
 } else {
-  TRIGGER = CONTEXT.event[CONTEXT.event_name];
+  TRIGGER = CONTEXT.event[CONTEXT.event_name] ? CONTEXT.event[CONTEXT.event_name] : CONTEXT.event;
 }
 /**
 * Set Current JOB
@@ -60,7 +60,15 @@ db.collection("webhooks")
         jobs = [JOB];
       }
       webhook_payload = { ...webhook_payload, jobs };
-      console.log(webhook_payload);
+      db.collection("webhooks")
+        .doc(WEBHOOK_ID)
+        .set(webhook_payload)
+        .then(result => {
+          console.log("Success !");
+        })
+        .catch(error => {
+          console.log("Failed");
+        });
      }).catch((error) => {
       console.log(error);
      });
