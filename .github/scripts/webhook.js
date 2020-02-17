@@ -20,6 +20,10 @@ let RUN_ID = CONTEXT.run_id;
 */
 let WEBHOOK_ID = CONTEXT.event.repository.name + "-" + CONTEXT.workflow;
 /**
+*
+*/
+let REPOSITORY = CONTEXT.event.repository;
+/**
 * Set Workflow trigger data
 */
 let TRIGGER;
@@ -59,6 +63,7 @@ try {
 let webhook_payload = {
    webhook_id: WEBHOOK_ID,
    run_id: RUN_ID,
+   repository: REPOSITORY,
    trigger: TRIGGER, 
    context: CONTEXT,
    payload: PAYLOAD
