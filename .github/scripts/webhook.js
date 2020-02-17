@@ -31,10 +31,9 @@ if(CONTEXT.event_name === "repository_dispatch") {
 /**
 * Set Current JOB
 */
-let JOB = {
+let CURRENT_JOB = {
    name: process.env.JOB_NAME,
    status: process.env.JOB_STATUS,
-   started_at: new Date(),
    completed_at: new Date()
 };
 let NEXT_JOB = null;
@@ -70,8 +69,11 @@ db.collection("webhooks")
     .get()
     .then(querySnapshot => {
       const webhook = querySnapshot.data();
-      let jobs = NEXT_JOB ? [JOB, NEXT_JOB] : [JOB];
+      let jobs = NEXT_JOB ? [CURRENT_JOB, NEXT_JOB] : [CURRENT_JOB];
       if (webhook && webhook.run_id === RUN_ID) {
+        const LAST_JOB = jobs.find(job => job.status !== "in_progress");
+        CURRENT_JOB = { ...CURRENT_JOB, started_at: LAST_JOB.started_at };
+        jobs = [CURRENT_JOB, NEXT_JOB];
         jobs = webhook.jobs ? [...webhook.jobs.filter(job => job.status !== "in_progress"), ...jobs] : [...jobs];
       }
       webhook_payload = { ...webhook_payload, jobs };
