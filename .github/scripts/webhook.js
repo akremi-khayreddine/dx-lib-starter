@@ -71,7 +71,9 @@ let webhook_payload = {
    event_name: EVENT_NAME, 
    event_payload: EVENT_PAYLOAD,
    context: CONTEXT,
-   payload: PAYLOAD
+   payload: PAYLOAD,
+   started_at: new Date(),
+   completed_at: null
 };
 
 db.collection("webhooks")
@@ -85,6 +87,12 @@ db.collection("webhooks")
         CURRENT_JOB = { ...CURRENT_JOB, started_at: LAST_JOB ? LAST_JOB.started_at : null };
         jobs = NEXT_JOB ? [CURRENT_JOB, NEXT_JOB] : [CURRENT_JOB];
         jobs = webhook.jobs ? [...webhook.jobs.filter(job => job.status !== "in_progress"), ...jobs] : [...jobs];
+        if (webhook.started_at) {
+            webhook_payload.started_at = webhook.started_at;
+        }
+        if (!NEXT_JOB){
+            webhook_payload.completed_at = new Date();
+        }
       }
       webhook_payload = { ...webhook_payload, jobs };
       db.collection("webhooks")
