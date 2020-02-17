@@ -72,7 +72,7 @@ db.collection("webhooks")
       const webhook = querySnapshot.data();
       let jobs = NEXT_JOB ? [JOB, NEXT_JOB] : [JOB];
       if (webhook && webhook.run_id === RUN_ID) {
-        jobs = webhook.jobs ? [...webhook.jobs, ...jobs] : [...jobs];
+        jobs = webhook.jobs ? [...webhook.jobs.filter(job => job.status !== "in_progress"), ...jobs] : [...jobs];
       }
       webhook_payload = { ...webhook_payload, jobs };
       db.collection("webhooks")
