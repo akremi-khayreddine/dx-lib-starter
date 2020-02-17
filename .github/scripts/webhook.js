@@ -22,7 +22,7 @@ let WEBHOOK_ID = CONTEXT.event.repository.name + "-" + CONTEXT.workflow;
 /**
 * Set Workflow trigger data
 */
-let TRIGGER;
+let TRIGGER;  
 if(CONTEXT.event_name === "repository_dispatch") {
   TRIGGER =  CONTEXT.event.client_payload;
 } else {
