@@ -26,11 +26,12 @@ let REPOSITORY = CONTEXT.event.repository;
 /**
 * Set Workflow trigger data
 */
-let TRIGGER;
-if(CONTEXT.event_name === "repository_dispatch") {
-  TRIGGER =  CONTEXT.event.client_payload;
+let EVENT_NAME =  CONTEXT.event_name;
+let EVENT_PAYLOAD;
+if(EVENT_NAME === "repository_dispatch") {
+  EVENT_PAYLOAD =  CONTEXT.event.client_payload;
 } else {
-  TRIGGER = CONTEXT.event[CONTEXT.event_name] ? CONTEXT.event[CONTEXT.event_name] : CONTEXT.event;
+  EVENT_PAYLOAD = CONTEXT.event[EVENT_NAME] ? CONTEXT.event[EVENT_NAME] : CONTEXT.event;
 }
 /**
 * Set Current JOB
@@ -54,7 +55,9 @@ if (process.env.NEXT_JOB) {
 */
 let PAYLOAD = null;
 try {
-   PAYLOAD = JSON.parse(process.env.JOB_PAYLOAD);
+   if (process.env.JOB_PAYLOAD) {
+      PAYLOAD = JSON.parse(process.env.JOB_PAYLOAD);
+   }
 } catch(error) {
    console.log(error);
 };
@@ -65,7 +68,8 @@ let webhook_payload = {
    webhook_id: WEBHOOK_ID,
    run_id: RUN_ID,
    repository: REPOSITORY,
-   trigger: TRIGGER, 
+   event_name: EVENT_NAME, 
+   event_payload: EVENT_PAYLOAD,
    context: CONTEXT,
    payload: PAYLOAD
 };
