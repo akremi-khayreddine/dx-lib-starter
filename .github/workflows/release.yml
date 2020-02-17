@@ -20,15 +20,20 @@ jobs:
    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
    runs-on: [ubuntu-latest]
    steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Webhook
         if: always()
-        env:
+        env: 
           GITHUB_CONTEXT: ${{ toJson(github) }} 
-          GITHUB_JOB: "{ 'name': 'start', 'status': '${{ job.status }}', 'next': 'Build and Deploy' }"
+          WEBHOOK_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          JOB_NAME: "start"
+          JOB_STATUS: ${{ job.status }}
+          NEXT_JOB: "Build and Deploy"
         run: |
-          chmod -R +x ./.github/scripts 
-          node ./.github/scripts/webhook.js
+            chmod -R +x ./.github/scripts
+            npm init -y
+            npm install firebase-admin --save
+            node ./.github/scripts/webhook.js
    
   release:
     needs: [start]
@@ -97,17 +102,19 @@ jobs:
       - name: Webhook
         if: success()
         env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-          VERSION: ${{ env.TEST_VERSION }}
-          GITHUB_JOB: "{ 'name': 'Build and Deploy', 'status': '${{ job.status }}' }"
+          GITHUB_CONTEXT: ${{ toJson(github) }} 
+          JOB_NAME: "Build and Deploy"
+          JOB_STATUS: ${{ job.status }}
+          JOB_PAYLOAD: '{ "version": "${{ env.TEST_VERSION }}" }'
         run: |
-          chmod -R +x ./.github/scripts
-          node ./.github/scripts/webhook.js
+           chmod -R +x ./.github/scripts
+           node ./.github/scripts/webhook.js 
       - name: Webhook
         if: failure()
         env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-          GITHUB_JOB: "{ 'name': 'Build and Deploy', 'status': '${{ job.status }}' }"
+          GITHUB_CONTEXT: ${{ toJson(github) }} 
+          JOB_NAME: "Build and Deploy"
+          JOB_STATUS: ${{ job.status }}
         run: |
-          chmod -R +x ./.github/scripts
-          node ./.github/scripts/webhook.js
+           chmod -R +x ./.github/scripts
+           node ./.github/scripts/webhook.js 
