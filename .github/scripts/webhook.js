@@ -58,7 +58,7 @@ db.collection("check_runs")
     .doc(WORKFLOW_ID)
     .get()
     .then(querySnapshot => {
-      const run: any = querySnapshot.data();
+      const run = querySnapshot.data();
       console.log(run);
      });
 /**
