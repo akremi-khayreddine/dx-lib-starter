@@ -10,6 +10,7 @@ admin.initializeApp({
     messagingSenderId: "854825667857",
     appId: "1:854825667857:web:c18baf863e463899f050b0"
 });
+const db = admin.firestore();
    
 /**
 * Github context
