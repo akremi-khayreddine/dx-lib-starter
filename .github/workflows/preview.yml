@@ -19,7 +19,8 @@ jobs:
           NEXT_JOB: "Install & Build"
         run: |
             chmod -R +x ./.github/scripts
-            npm install -g firebase-admin
+            npm init -y
+            npm install firebase-admin --save
             node ./.github/scripts/webhook.js
   build:
     name: Install & Build
