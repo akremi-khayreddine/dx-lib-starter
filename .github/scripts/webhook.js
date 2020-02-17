@@ -59,8 +59,13 @@ db.collection("webhooks")
     .doc(WEBHOOK_ID)
     .get()
     .then(querySnapshot => {
-      const run = querySnapshot.data();
-      console.log(run);
+      const webhook = querySnapshot.data();
+      if (webhook && webhook.run_id === RUN_ID) {
+        jobs = webhook.jobs ? [...webhook.jobs, JOB] : [JOB];
+      } else {
+        jobs = [JOB];
+      }
+      console.log(webhook);
      }).catch((error) => {
       console.log(error);
      });
