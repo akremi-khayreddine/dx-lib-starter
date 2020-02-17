@@ -5,7 +5,7 @@ on:
   types: [closed] 
  repository_dispatch:   
   types: [merge]
-
+   
 env:
   NODE_VERSION: "12.x"            # node version to use
   PACKAGES_PATH: $HOME/packages   # directory used to store user data in /home/runner/packages.
