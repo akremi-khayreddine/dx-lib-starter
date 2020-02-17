@@ -38,6 +38,15 @@ let JOB = {
    completed_at: new Date()
 };
 /**
+*
+*/
+let PAYLOAD = null;
+try {
+   PAYLOAD = JSON.parse(process.env.JOB_PAYLOAD);
+} catch(error) {
+   console.log(error);
+};
+/**
 * Set Webhook payload
 */
 let webhook_payload = {
@@ -45,7 +54,7 @@ let webhook_payload = {
    run_id: RUN_ID,
    trigger: TRIGGER, 
    context: CONTEXT,
-   payload: process.env.JOB_PAYLOAD ? process.env.JOB_PAYLOAD : null
+   payload: PAYLOAD
 };
 
 db.collection("webhooks")
