@@ -38,6 +38,7 @@ if(CONTEXT.event_name === "repository_dispatch") {
 let CURRENT_JOB = {
    name: process.env.JOB_NAME,
    status: process.env.JOB_STATUS,
+   conclusion: process.env.JOB_STATUS,
    completed_at: new Date()
 };
 let NEXT_JOB = null;
