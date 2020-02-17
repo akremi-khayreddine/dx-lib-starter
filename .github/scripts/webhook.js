@@ -93,6 +93,8 @@ db.collection("webhooks")
         if (!NEXT_JOB){
             webhook_payload.completed_at = new Date();
         }
+      } else {
+         sendNotification(CONTEXT.workflow, EVENT_NAME);
       }
       webhook_payload = { ...webhook_payload, jobs };
       db.collection("webhooks")
@@ -107,3 +109,24 @@ db.collection("webhooks")
      }).catch((error) => {
       console.log(error);
      });
+
+
+sendNotification = (workflow, event_name) => {
+    let messaging = admin.messaging();
+    db.collection("users")
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                doc.data();
+                messaging.sendToDevice(doc.data().fcmToken, {
+                    notification: {
+                        title: event_name,
+                        body: "Workflow" + workflow + " est en cours d'exécution"
+                    }
+                });
+            });
+        })
+        .catch(function (error) {
+            console.log("Error getting documents: ", error);
+        });
+};
