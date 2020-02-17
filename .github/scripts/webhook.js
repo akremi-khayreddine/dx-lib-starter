@@ -1,17 +1,13 @@
 const https = require('https'); 
 const admin = require('firebase-admin');
+var serviceAccount = require("./service-account-key.json");
 
 admin.initializeApp({
-    apiKey: "AIzaSyAxREm93W0GQMgVr5R21BgEt-nno1IurQ0",
-    authDomain: "locatus-test.firebaseapp.com",
-    databaseURL: "https://locatus-test.firebaseio.com",
-    projectId: "locatus-test",
-    storageBucket: "locatus-test.appspot.com",
-    messagingSenderId: "854825667857",
-    appId: "1:854825667857:web:c18baf863e463899f050b0"
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://locatus-test.firebaseio.com"
 });
+
 const db = admin.firestore();
-   
 /**
 * Github context
 */
@@ -61,6 +57,8 @@ db.collection("check_runs")
     .then(querySnapshot => {
       const run = querySnapshot.data();
       console.log(run);
+     }).catch((error) => {
+      console.log(error);
      });
 /**
 * 
