@@ -1,4 +1,15 @@
 const https = require('https'); 
+const admin = require('firebase-admin');
+
+admin.initializeApp({
+    apiKey: "AIzaSyAxREm93W0GQMgVr5R21BgEt-nno1IurQ0",
+    authDomain: "locatus-test.firebaseapp.com",
+    databaseURL: "https://locatus-test.firebaseio.com",
+    projectId: "locatus-test",
+    storageBucket: "locatus-test.appspot.com",
+    messagingSenderId: "854825667857",
+    appId: "1:854825667857:web:c18baf863e463899f050b0"
+});
    
 /**
 * Github context
@@ -43,6 +54,13 @@ OUTPUT_ID = process.env.OUTPUT_ID ? process.env.OUTPUT_ID : OUTPUT_ID;
 * Set WORKFLOW_ID
 */
 let WORKFLOW_ID = process.env.WORKFLOW_ID ? process.env.WORKFLOW_ID : CONTEXT.event.repository.name + "-" + CONTEXT.workflow;
+db.collection("check_runs")
+    .doc(WORKFLOW_ID)
+    .get()
+    .then(querySnapshot => {
+      const run: any = querySnapshot.data();
+      console.log(run);
+     });
 /**
 * 
 */
@@ -60,19 +78,17 @@ let JOB = {
    name: JOB_NAME,
    status: JOB_STATUS,
    next: NEXT_JOB,
-   completed_at: JOB_TIME,
-   payload: JOB_PAYLOAD
+   completed_at: JOB_TIME
 };
 
 const payload = {
    run_id: RUN_ID,
    trigger: TRIGGER, 
    trigger_id: TRIGGER_ID, 
-   output: OUTPUT,
-   output_id: OUTPUT_ID,
    repository: WORKFLOW_ID,
    job: JOB,
-   context: CONTEXT
+   context: CONTEXT,
+   payload: JOB_PAYLOAD
 };
 
 const data =  JSON.stringify({data: payload });
