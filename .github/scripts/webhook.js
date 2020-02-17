@@ -34,9 +34,17 @@ if(CONTEXT.event_name === "repository_dispatch") {
 let JOB = {
    name: process.env.JOB_NAME,
    status: process.env.JOB_STATUS,
-   next: process.env.NEXT_JOB ? process.env.NEXT_JOB : null,
+   started_at: new Date(),
    completed_at: new Date()
 };
+let NEXT_JOB = null;
+if (process.env.NEXT_JOB) {
+   NEXT_JOB = {
+      name: process.env.NEXT_JOB,
+      started_at: new Date(),
+      status: "in_progress"
+   };
+}
 /**
 *
 */
@@ -62,11 +70,9 @@ db.collection("webhooks")
     .get()
     .then(querySnapshot => {
       const webhook = querySnapshot.data();
-      let jobs = [];
+      let jobs = NEXT_JOB ? [JOB, NEXT_JOB] : [JOB];
       if (webhook && webhook.run_id === RUN_ID) {
-        jobs = webhook.jobs ? [...webhook.jobs, JOB] : [JOB];
-      } else {
-        jobs = [JOB];
+        jobs = webhook.jobs ? [...webhook.jobs, ...jobs] : [...jobs];
       }
       webhook_payload = { ...webhook_payload, jobs };
       db.collection("webhooks")
