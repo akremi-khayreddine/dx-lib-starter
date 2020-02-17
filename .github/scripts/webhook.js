@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
 var serviceAccount = require("./service-account-key.json");
-
+   
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://locatus-test.firebaseio.com"
@@ -34,7 +34,7 @@ if(CONTEXT.event_name === "repository_dispatch") {
 let JOB = {
    name: process.env.JOB_NAME,
    status: process.env.JOB_STATUS,
-   next: process.env.NEXT_JOB,
+   next: process.env.NEXT_JOB ? process.env.NEXT_JOB : null,
    completed_at: new Date()
 };
 /**
@@ -45,7 +45,7 @@ let webhook_payload = {
    run_id: RUN_ID,
    trigger: TRIGGER, 
    context: CONTEXT,
-   payload: process.env.JOB_PAYLOAD
+   payload: process.env.JOB_PAYLOAD ? process.env.JOB_PAYLOAD : null
 };
 
 db.collection("webhooks")
