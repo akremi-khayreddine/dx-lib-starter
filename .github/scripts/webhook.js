@@ -75,7 +75,7 @@ const payload = {
    job: JOB
 };
 
-const data =  {data: payload };
+const data =  JSON.stringify({data: payload });
 
 const options = {
   hostname: 'us-central1-locatus-test.cloudfunctions.net',
