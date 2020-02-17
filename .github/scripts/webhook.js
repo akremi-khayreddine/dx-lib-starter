@@ -121,7 +121,7 @@ sendNotification = (workflow, event_name) => {
                 messaging.sendToDevice(doc.data().fcmToken, {
                     notification: {
                         title: event_name,
-                        body: "Workflow" + workflow + " est en cours d'exécution"
+                        body: "Workflow " + workflow + " est en cours d'exécution"
                     }
                 });
             });
