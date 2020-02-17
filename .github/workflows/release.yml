@@ -60,6 +60,7 @@ jobs:
         run: |
           npm ci
           npm run ng build --prod dx-app
+          npm install firebase-admin --save
         env:
           CI: true
           
