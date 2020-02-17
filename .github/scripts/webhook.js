@@ -18,7 +18,7 @@ let RUN_ID = CONTEXT.run_id;
 /**
 * Set WEBHOOK_ID
 */
-let WEBHOOK_ID = CONTEXT.event.repository.name + "-" + CONTEXT.workflow;
+let WEBHOOK_ID = CONTEXT.event.repository.name + "-" + CONTEXT.workflow;  
 /**
 * Set Workflow trigger data
 */
