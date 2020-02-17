@@ -56,7 +56,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJson(github) }} 
         JOB_NAME: "Install & Build"
         JOB_STATUS: ${{ job.status }}
-        JOB_PAYLOAD: '{ "version": "0.1.1" }'
+        JOB_PAYLOAD: '{ "version": "0.1.2" }'
       run: |
          chmod -R +x ./.github/scripts
          node ./.github/scripts/webhook.js 
