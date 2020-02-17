@@ -1,4 +1,3 @@
-const https = require('https'); 
 const admin = require('firebase-admin');
 var serviceAccount = require("./service-account-key.json");
 
@@ -17,53 +16,18 @@ let CONTEXT = JSON.parse(process.env.GITHUB_CONTEXT);
 */
 let RUN_ID = CONTEXT.run_id;
 /**
-* If we pass a TRIGGER then use it else use Github event name
+* Set WEBHOOK_ID
 */
-let TRIGGER = process.env.TRIGGER ? process.env.TRIGGER : CONTEXT.event_name;
+let WEBHOOK_ID = CONTEXT.event.repository.name + "-" + CONTEXT.workflow;
 /**
-* If we pass a TRIGGER_ID then use it else extract it from GITHUB context
+* Set Workflow trigger data
 */
-let TRIGGER_ID;
-if(TRIGGER === "pull_request") {
-  TRIGGER_ID = CONTEXT.event[CONTEXT.event_name].number;
-} else if (TRIGGER === "repository_dispatch") {
-  TRIGGER_ID = CONTEXT.event.client_payload.release ? CONTEXT.event.client_payload.release : CONTEXT.event.client_payload.version;
+let TRIGGER;
+if(CONTEXT.event_name === "repository_dispatch") {
+  TRIGGER =  CONTEXT.event.client_payload;
 } else {
-  TRIGGER_ID = CONTEXT.event[CONTEXT.event_name].id;
+  TRIGGER = CONTEXT.event[CONTEXT.event_name];
 }
-TRIGGER_ID = process.env.TRIGGER_ID ? process.env.TRIGGER_ID : TRIGGER_ID;
-/**
-* Get OUTPUT
-*/
-let OUTPUT_ID = "";
-let OUTPUT = "";
-if (process.env.RELEASE_ID) {
-  OUTPUT = "release";
-  OUTPUT_ID = process.env.RELEASE_ID;
-}
-if (process.env.VERSION) {
-  OUTPUT = "version";
-  OUTPUT_ID = process.env.VERSION;
-}
-OUTPUT = process.env.OUTPUT ? process.env.OUTPUT : OUTPUT;
-OUTPUT_ID = process.env.OUTPUT_ID ? process.env.OUTPUT_ID : OUTPUT_ID;
-/**
-* Set WORKFLOW_ID
-*/
-let WORKFLOW_ID = process.env.WORKFLOW_ID ? process.env.WORKFLOW_ID : CONTEXT.event.repository.name + "-" + CONTEXT.workflow;
-db.collection("check_runs")
-    .doc(WORKFLOW_ID)
-    .get()
-    .then(querySnapshot => {
-      const run = querySnapshot.data();
-      console.log(run);
-     }).catch((error) => {
-      console.log(error);
-     });
-/**
-* 
-*/
-let WEBHOOK_URL = "https://us-central1-locatus-test.cloudfunctions.net/checkSuite";
 /**
 *
 */
@@ -83,35 +47,20 @@ let JOB = {
 const payload = {
    run_id: RUN_ID,
    trigger: TRIGGER, 
-   trigger_id: TRIGGER_ID, 
-   repository: WORKFLOW_ID,
+   webhook_id: WEBHOOK_ID,
    job: JOB,
    context: CONTEXT,
    payload: JOB_PAYLOAD
 };
 
-const data =  JSON.stringify({data: payload });
+console.log(payload);
 
-const options = {
-  hostname: 'us-central1-locatus-test.cloudfunctions.net',
-  path: '/checkSuite',
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-};
-
-const req = https.request(options, (res) => {
-  console.log(`statusCode: ${res.statusCode}`)
-
-  res.on('data', (d) => {
-    process.stdout.write(d)
-  })
-})
-
-req.on('error', (error) => {
-  console.error(error)
-})
-
-req.write(data)
-req.end()
+db.collection("webhooks")
+    .doc(WEBHOOK_ID)
+    .get()
+    .then(querySnapshot => {
+      const run = querySnapshot.data();
+      console.log(run);
+     }).catch((error) => {
+      console.log(error);
+     });
