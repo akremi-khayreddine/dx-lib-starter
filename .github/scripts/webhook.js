@@ -64,7 +64,7 @@ try {
 /**
 * Set Webhook payload
 */
-let webhook_payload = {
+let WEBHOOK_PAYLOAD = {
    webhook_id: WEBHOOK_ID,
    run_id: RUN_ID,
    repository: REPOSITORY,
@@ -95,70 +95,77 @@ db.collection("webhooks")
         jobs = NEXT_JOB ? [CURRENT_JOB, NEXT_JOB] : [CURRENT_JOB];
         jobs = webhook.jobs ? [...webhook.jobs.filter(job => job.status !== "in_progress"), ...jobs] : [...jobs];
         if (webhook.started_at) {
-            webhook_payload.started_at = webhook.started_at;
+            WEBHOOK_PAYLOAD.started_at = webhook.started_at;
         }
         if (!NEXT_JOB){
-            webhook_payload.completed_at = new Date();
+            WEBHOOK_PAYLOAD.completed_at = new Date();
         }
       } else {
-         /**
-         *  Send Notifications to all users
-         */
-         let messaging = admin.messaging();
-         db.collection("users")
-        .get()
-        .then(querySnapshot => {
-               const tokens = querySnapshot.docs
-                  .filter(doc => doc.data().fcmToken)
-                  .map(doc => doc.data().fcmToken);
-               messaging
-               .sendToDevice(tokens, {
-                      notification: {
-                        title: EVENT_NAME,
-                        body:
-                          "Workflow " + CONTEXT.workflow + " est en cours d'exécution"
-                      }
-                    })
-                    .then(result => {
-                        console.log("Notification sent");
-                        notificationComplete = true;
-                        if (doc_saved) {
-                            process.exit(0);
-                        }
-                     })
-                    .catch(error => {
-                        notificationComplete = true;
-                        if (doc_saved) {
-                            process.exit(0);
-                        }
-                        console.log("Error notification not sent");
-                     });
-        })
-        .catch(function (error) {
-            console.log("Error getting documents: ", error);
-        });
-       /**
-       *
-       */
+         sendNotification(EVENT_NAME, CONTEXT.workflow);
       }
-      webhook_payload = { ...webhook_payload, jobs };
-      db.collection("webhooks")
-        .doc(WEBHOOK_ID)
-        .set(webhook_payload)
-        .then(result => {
-          console.log("Success !");
-          doc_saved = true;
-          if (notificationComplete) {
-             process.exit(0);
-          }
-        })
-        .catch(error => {
-          console.log("Failed");
-          doc_saved = true;
-          if (notificationComplete) {
-              process.exit(1);
-           }
-        });
+      WEBHOOK_PAYLOAD = { ...WEBHOOK_PAYLOAD, jobs };
+      saveDoc(WEBHOOK_ID, WEBHOOK_PAYLOAD);
      }).catch((error) => {
       console.log(error);
      });
+
+/**
+* Save Firebase doc
+*/
+saveDoc = (id, payload) => {
+  db.collection("webhooks")
+    .doc(id)
+    .set(payload)
+    .then(result => {
+      console.log("Success !");
+      doc_saved = true;
+      if (notificationComplete) {
+        process.exit(0);
+      }
+    })
+    .catch(error => {
+      console.log("Failed");
+      doc_saved = true;
+      if (notificationComplete) {
+        process.exit(1);
+      }
+    });
+};
+
+/**
+* Send notification
+*/
+sendNotification = (title, workflow) => {
+  let messaging = admin.messaging();
+  db.collection("users")
+    .get()
+    .then(querySnapshot => {
+      const tokens = querySnapshot.docs
+        .filter(doc => doc.data().fcmToken)
+        .map(doc => doc.data().fcmToken);
+      messaging
+        .sendToDevice(tokens, {
+          notification: {
+            title,
+            body: "Workflow " + workflow + " est en cours d'exécution"
+          }
+        })
+        .then(result => {
+          console.log("Notification sent");
+          notificationComplete = true;
+          if (doc_saved) {
+            process.exit(0);
+          }
+        })
+        .catch(error => {
+          notificationComplete = true;
+          if (doc_saved) {
+            process.exit(0);
+          }
+          console.log("Error notification not sent");
+        });
+    })
+    .catch(function(error) {
+      console.log("Error getting documents: ", error);
+    });
+};
