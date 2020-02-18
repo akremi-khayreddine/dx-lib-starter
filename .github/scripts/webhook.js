@@ -76,13 +76,6 @@ let WEBHOOK_PAYLOAD = {
    completed_at: null
 };
 
-/**
-* To exit node process
-* If we do not exit this script will contenu running forever
-*/
-let notificationComplete = false;
-let doc_saved = false;
-
 db.collection("webhooks")
     .doc(WEBHOOK_ID)
     .get()
@@ -100,8 +93,6 @@ db.collection("webhooks")
         if (!NEXT_JOB){
             WEBHOOK_PAYLOAD.completed_at = new Date();
         }
-      } else {
-         sendNotification(EVENT_NAME, CONTEXT.workflow);
       }
       WEBHOOK_PAYLOAD = { ...WEBHOOK_PAYLOAD, jobs };
       saveDoc(WEBHOOK_ID, WEBHOOK_PAYLOAD);
@@ -118,54 +109,8 @@ saveDoc = (id, payload) => {
     .set(payload)
     .then(result => {
       console.log("Success !");
-      doc_saved = true;
-      if (notificationComplete) {
-        process.exit(0);
-      }
     })
     .catch(error => {
       console.log("Failed");
-      doc_saved = true;
-      if (notificationComplete) {
-        process.exit(1);
-      }
-    });
-};
-
-/**
-* Send notification
-*/
-sendNotification = (title, workflow) => {
-  let messaging = admin.messaging();
-  db.collection("users")
-    .get()
-    .then(querySnapshot => {
-      const tokens = querySnapshot.docs
-        .filter(doc => doc.data().fcmToken)
-        .map(doc => doc.data().fcmToken);
-      messaging
-        .sendToDevice(tokens, {
-          notification: {
-            title,
-            body: "Workflow " + workflow + " est en cours d'exécution"
-          }
-        })
-        .then(result => {
-          console.log("Notification sent");
-          notificationComplete = true;
-          if (doc_saved) {
-            process.exit(0);
-          }
-        })
-        .catch(error => {
-          notificationComplete = true;
-          if (doc_saved) {
-            process.exit(0);
-          }
-          console.log("Error notification not sent");
-        });
-    })
-    .catch(function(error) {
-      console.log("Error getting documents: ", error);
     });
 };
