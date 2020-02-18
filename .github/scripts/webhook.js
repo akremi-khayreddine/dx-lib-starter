@@ -76,6 +76,13 @@ let webhook_payload = {
    completed_at: null
 };
 
+/**
+* To exit node process
+* If we do not exit this script will contenu running forever
+*/
+let notificationComplete = false;
+let doc_saved = false;
+
 db.collection("webhooks")
     .doc(WEBHOOK_ID)
     .get()
@@ -101,11 +108,11 @@ db.collection("webhooks")
          db.collection("users")
         .get()
         .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                const user = doc.data();
-               if (user.fcmToken) {
-                  messaging
-                    .sendToDevice(user.fcmToken, {
+               const tokens = querySnapshot.docs
+                  .filter(doc => doc.data().fcmToken)
+                  .map(doc => doc.data().fcmToken);
+               messaging
+               .sendToDevice(tokens, {
                       notification: {
                         title: EVENT_NAME,
                         body:
@@ -113,13 +120,19 @@ db.collection("webhooks")
                       }
                     })
                     .then(result => {
-                        console.log("Notification sent to " + user.uid);
+                        console.log("Notification sent");
+                        notificationComplete = true;
+                        if (doc_saved) {
+                            process.exit(0);
+                        }
                      })
                     .catch(error => {
+                        notificationComplete = true;
+                        if (doc_saved) {
+                            process.exit(0);
+                        }
                         console.log("Error notification not sent");
                      });
-               }
-            });
         })
         .catch(function (error) {
             console.log("Error getting documents: ", error);
@@ -134,9 +147,17 @@ db.collection("webhooks")
         .set(webhook_payload)
         .then(result => {
           console.log("Success !");
+          doc_saved = true;
+          if (notificationComplete) {
+             process.exit(0);
+          }
         })
         .catch(error => {
           console.log("Failed");
+          doc_saved = true;
+          if (notificationComplete) {
+              process.exit(1);
+           }
         });
      }).catch((error) => {
       console.log(error);
