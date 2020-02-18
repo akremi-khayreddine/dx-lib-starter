@@ -31,8 +31,6 @@ jobs:
           NEXT_JOB: "Build and Deploy"
         run: |
             chmod -R +x ./.github/scripts
-            npm init -y
-            npm install firebase-admin --save
             node ./.github/scripts/webhook.js
    
   release:
@@ -60,7 +58,6 @@ jobs:
         run: |
           npm ci
           npm run ng build --prod dx-app
-          npm install firebase-admin --save
         env:
           CI: true
           
