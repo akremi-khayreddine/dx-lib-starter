@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Webhook
-        uses: akremi-khayreddine/private-actions-loader
+        uses: akremi-khayreddine/private-actions-loader@master
         with:
           TOKEN: ${{ github.token }}
           REPO: akremi-khayreddine/dx-webhook
