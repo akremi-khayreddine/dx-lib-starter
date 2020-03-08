@@ -1,5 +1,5 @@
 name: preview       
-            
+              
 on:
   pull_request:
     types: [synchronize, opened, labeled, unlabeled, edited]
