@@ -11,16 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Webhook
-        if: always()
-        env: 
-          GITHUB_CONTEXT: ${{ toJson(github) }} 
-          WEBHOOK_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          JOB_NAME: "start"
+        uses: akremi-khayreddine/private-actions-loader
+        with:
+          TOKEN: ${{ github.token }}
+          REPO: akremi-khayreddine/dx-webhook
+          JOB_NAME: 'test'
           JOB_STATUS: ${{ job.status }}
-          NEXT_JOB: "Install & Build"
-        run: |
-            chmod -R +x ./.github/scripts
-            node ./.github/scripts/webhook.js
+          RUN_ID: ${{ github.run_id }}
+          PIPELINE_ID: dx-lib-starter
   build:
     name: Install & Build
     needs: [start]
